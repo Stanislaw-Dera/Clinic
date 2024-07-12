@@ -1,0 +1,40 @@
+.bg-image{
+  background-image: url("clinic.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100vh;
+  background-attachment: fixed;
+  padding: 10px;
+}
+
+.header{
+  @media (max-width: 767px) {
+    text-align: center;
+  }
+
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#welcome-logo{
+  @media (min-width: 768px) {
+    width: 500px;
+  }
+  @media (max-width: 767px) {
+    width: 100vh;
+  }
+}
+
+.welcome-page-body{
+  margin-top: 4rem;
+}
+.welcome-page-button{
+
+}
+
+h1{
+  color: #CDCDCD;
+  text-align: center;
+}

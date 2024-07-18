@@ -1,0 +1,8 @@
+{% extends "welcome-page-layout.html" %}
+{% block body %}
+    <h1>How can I help you today?</h1>
+    <div id="welcome-buttons-container">
+        <a class="welcome-page-button" href="{% url 'login' %}">Log in</a>
+        <a class="welcome-page-button" href="{% url 'register' %}">Register</a>
+    </div>
+{% endblock %}

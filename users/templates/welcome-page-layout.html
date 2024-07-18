@@ -12,10 +12,23 @@
 <body>
     <div class="bg-image">
         <div class="header">
-            <img src="{% static 'users/Frame 1Logo-white.svg' %}" alt="logo" id="welcome-logo">
-            {% block header %}{% endblock %}
+            <a href="{% url 'index' %}">
+                <img src="{% static 'users/Frame 1Logo-white.svg' %}" alt="logo" id="welcome-logo">
+            </a>
+{#            {% if user.is_authenticated %}#}
+{#                Logged in as {{ user.get_full_name }}#}
+{#            {% endif %}#}
         </div>
-        <div class="welcome-page-body">
+        <div class="container">
+
+            <div id="messages-container">
+                {% for message in messages %}
+                    <div class="info">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+
             {% block body %}{% endblock %}
         </div>
     </div>

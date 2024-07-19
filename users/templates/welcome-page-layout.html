@@ -19,8 +19,8 @@
 {#                Logged in as {{ user.get_full_name }}#}
 {#            {% endif %}#}
         </div>
-        <div class="container">
 
+        <div class="page-body">
             <div id="messages-container">
                 {% for message in messages %}
                     <div class="info">
@@ -28,7 +28,6 @@
                     </div>
                 {% endfor %}
             </div>
-
             {% block body %}{% endblock %}
         </div>
     </div>

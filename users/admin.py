@@ -3,7 +3,12 @@ from . import models
 
 # Register your models here.
 
-admin.site.register(models.User)
+
+class UserAdmin(admin.ModelAdmin):
+     fields = ['name', 'surname', 'email', 'activation_code', 'id', 'is_active']
+
+
+admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Patient)
 admin.site.register(models.Doctor)
 admin.site.register(models.WorkDay)

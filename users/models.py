@@ -1,3 +1,5 @@
+import uuid
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from datetime import date
@@ -11,12 +13,18 @@ class User(AbstractBaseUser):
     name = models.CharField(max_length=20)
     surname = models.CharField(max_length=20)
     email = models.EmailField(max_length=100, unique=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
+    activation_code = models.CharField(max_length=10, blank=True, null=True, unique=True)
 
     def __str__(self):
         return f'{self.name} {self.surname} ({self.id})'
 
     USERNAME_FIELD = 'email'
+
+    def save(self, *args, **kwargs):
+        if not self.activation_code:
+            self.activation_code = str(uuid.uuid4())[:10]
+        super().save(*args, **kwargs)
 
 
 class Patient(models.Model):

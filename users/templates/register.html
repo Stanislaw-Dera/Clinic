@@ -3,9 +3,10 @@
 <form method="post" action="{% url 'register' %}">
 <div id="login-buttons-container">
     {% csrf_token %}
-    <input class="form-control" placeholder="activation code" type="text" name="activation_code">
-    <input class="form-control" placeholder="password" type="password" name="password">
-    <input class="form-control" placeholder="confirm password" type="password" name="confirm_password">
+    <input class="form-control" placeholder="Email" type="email" name="email">
+    <input class="form-control" placeholder="Activation code" type="text" name="activation_code">
+    <input class="form-control" placeholder="Password" type="password" name="password">
+    <input class="form-control" placeholder="Confirm Password" type="password" name="confirm_password">
     <input type="submit" class="welcome-page-button" value="Register">
 </div></form>
 {% endblock %}

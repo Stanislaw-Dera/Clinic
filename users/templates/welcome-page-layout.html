@@ -10,7 +10,7 @@
     <link href="{% static 'users/welcome-page.css' %}" rel="stylesheet">
 </head>
 <body>
-    <div class="bg-image">
+    <div class="content">
         <div class="header">
             <a href="{% url 'index' %}">
                 <img src="{% static 'users/Frame 1Logo-white.svg' %}" alt="logo" id="welcome-logo">
@@ -21,7 +21,7 @@
         </div>
 
         <div class="page-body">
-            <div id="messages-container">
+            <div id="messages-container" class="container">
                 {% for message in messages %}
                     <div class="info">
                         {{ message }}

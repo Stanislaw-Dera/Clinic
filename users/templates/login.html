@@ -1,6 +1,6 @@
 {% extends "welcome-page-layout.html" %}
 {% block body %}
-    <form method="post" action="{% url 'login' %}">
+    <form method="post" action="{% url 'login' %}" class="container">
     <div id="login-buttons-container">
         {% csrf_token %}
         <input class="form-control" placeholder="Email" type="email" name="email">

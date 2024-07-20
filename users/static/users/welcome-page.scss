@@ -1,15 +1,32 @@
-html{
+html, body{
   @media (min-width: 768px) {
     font-size: 26px;
   }
   @media (max-width: 767px) {
     font-size:16px
   }
+  height: 100%;
+  overflow: auto;
+}
+
+body{
+  background-image: url("clinic.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
 }
 
 #messages-container{
   justify-content: center;
   display: flex;
+  flex-wrap: wrap;
 
   .info {
     margin-bottom: 1rem;
@@ -24,21 +41,10 @@ html{
   }
 }
 
-
-.bg-image{
-  background-image: url("clinic.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  width: 100%;
-  height: 100vh;
-  background-attachment: fixed;
-  padding: 10px;
-}
-
 .header{
   @media (max-width: 767px) {
     text-align: center;
+    justify-content: center;
   }
 
   display: flex;
@@ -51,7 +57,7 @@ html{
     width: 500px;
   }
   @media (max-width: 767px) {
-    width: 100vh;
+    width: 100%;
   }
 }
 
@@ -146,8 +152,10 @@ html{
 .page-body{
   @media (min-width: 768px) {
     margin-top: 3rem;
-    margin-left: 15rem;
-    margin-right: 15rem;
+
+    .welcome-page-button{
+      max-width: 300px;
+    }
   }
 }
 

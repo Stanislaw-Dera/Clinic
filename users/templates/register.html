@@ -1,12 +1,12 @@
 {% extends "welcome-page-layout.html" %}
 {% block body %}
-<form method="post" action="{% url 'register' %}">
+<form method="post" action="{% url 'register' %}" class="container">
 <div id="login-buttons-container">
     {% csrf_token %}
-    <input class="form-control" placeholder="Email" type="email" name="email">
-    <input class="form-control" placeholder="Activation code" type="text" name="activation_code">
-    <input class="form-control" placeholder="Password" type="password" name="password">
-    <input class="form-control" placeholder="Confirm Password" type="password" name="confirm_password">
+    <input class="form-control" placeholder="Email" type="email" name="email" value="{{ email }}">
+    <input class="form-control" placeholder="Activation code" type="text" name="activation_code" value="{{ activation_code }}">
+    <input class="form-control" placeholder="Password" type="password" name="password" value="{{ password }}">
+    <input class="form-control" placeholder="Confirm Password" type="password" name="confirm_password" value="{{ confirm_password }}">
     <input type="submit" class="welcome-page-button" value="Register">
 </div></form>
 {% endblock %}

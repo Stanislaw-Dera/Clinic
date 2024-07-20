@@ -8,6 +8,8 @@ from datetime import date
 
 from django.contrib.auth.models import AbstractBaseUser
 
+from users.user_managing import CustomUserManager
+
 
 class User(AbstractBaseUser):
     name = models.CharField(max_length=20)
@@ -19,6 +21,7 @@ class User(AbstractBaseUser):
     def __str__(self):
         return f'{self.name} {self.surname} ({self.id})'
 
+    objects = CustomUserManager()
     USERNAME_FIELD = 'email'
 
     def save(self, *args, **kwargs):

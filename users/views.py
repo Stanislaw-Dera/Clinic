@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from users.models import User
-from users.user_managing import register_with_act_code
+from users.utils import register_with_act_code
 
 
 # Create your views here.
@@ -44,7 +44,7 @@ def login_view(request):
             login(request, user)
 
             # temporary message
-            messages.add_message(request, messages.ERROR, "Logged in.")
+            messages.add_message(request, messages.INFO, "Logged in.")
 
             # Redirect to a success page.
             return HttpResponseRedirect(reverse("index"))

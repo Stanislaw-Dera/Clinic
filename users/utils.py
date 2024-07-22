@@ -28,8 +28,9 @@ def register_with_act_code(email, activation_code, password, password_confirmati
 
     return True
 
-
 # backend to modify authenticate method (with help of ai :P)
+
+
 class EmailBackend(BaseBackend):
     def authenticate(self, request, email=None, password=None, **kwargs):
         print(f"Authenticating user with email: {email}")

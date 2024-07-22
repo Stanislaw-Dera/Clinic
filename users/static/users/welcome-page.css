@@ -46,13 +46,19 @@ body {
 
 .header {
   display: flex;
-  flex-wrap: wrap;
   margin-bottom: 0.5rem;
+}
+@media (min-width: 768px) {
+  .header {
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 @media (max-width: 767px) {
   .header {
     text-align: center;
     justify-content: center;
+    flex-wrap: wrap;
   }
 }
 
@@ -65,6 +71,14 @@ body {
   #welcome-logo {
     width: 100%;
   }
+}
+
+.login-info {
+  color: #cdcdcd;
+}
+.login-info a {
+  color: #9a9a9a;
+  text-decoration: underline;
 }
 
 #welcome-buttons-container {

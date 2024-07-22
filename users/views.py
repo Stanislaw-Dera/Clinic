@@ -14,7 +14,10 @@ from users.utils import register_with_act_code
 
 
 def index(request):
-    return render(request, "welcome-page.html")
+    print(request.user)
+    return render(request, "welcome-page.html", {"user": request.user})
+
+    # return render(request, "welcome-page.html", {"foo": "foo"})
 
     # dla view dla lekarzy, view dla pacjentów, view dla niezalogowanych, post=log_out
 
@@ -27,17 +30,15 @@ def login_view(request):
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
-        print(email, "|", password)
 
         try:
             user = User.objects.get(email=email)
-            print(f"Direct query found user: {user}")
+            # print(f"Direct query found user: {user}")
         except User.DoesNotExist:
-            print("User does not exist in direct query")
+            # print("User does not exist in direct query")
             user = None
 
         user = authenticate(request, email=email, password=password)
-        print(type(user), user)
 
         if user is not None:
             user.backend = 'users.user_managing.EmailBackend'
@@ -62,10 +63,14 @@ def register_view(request):
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
+        print("register: ", email, activation_code)
+
         try:
             register_with_act_code(email, activation_code, password, confirm_password)
+            print('reg with act code successful')
         except ValidationError as e:
             for message in e.messages:
+                print('register: ', message)
                 messages.add_message(request, messages.ERROR, message)
 
             return render(request, "register.html", context={
@@ -81,7 +86,7 @@ def register_view(request):
     return render(request, 'register.html')
 
 
-@login_required(redirect_field_name='login')
+# @login_required(redirect_field_name=None)
 def logout_view(request):
     logout(request)
 

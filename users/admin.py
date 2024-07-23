@@ -7,7 +7,8 @@ from .models import User
 
 
 class UserAdmin(admin.ModelAdmin):
-    fields = ['name', 'surname', 'email', 'activation_code', 'password', 'is_active', ]
+    fields = ['name', 'surname', 'email', 'activation_code',
+              'password', 'is_active', 'is_doctor', 'is_patient']
 
 
 admin.site.register(User,UserAdmin)

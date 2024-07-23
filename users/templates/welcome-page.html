@@ -1,8 +1,22 @@
 {% extends "welcome-page-layout.html" %}
 {% block body %}
-    <h1>How can I help you today?</h1>
-    <div id="welcome-buttons-container">
-        <a class="welcome-page-button" href="{% url 'login' %}">Log in</a>
-        <a class="welcome-page-button" href="{% url 'register' %}">Register</a>
-    </div>
+    {% if user.is_authenticated %}
+        <h1>What would you like to do today?</h1>
+        <div id="welcome-buttons-container">
+        {% if user.is_doctor %}
+            <a class="welcome-page-button" href="{% url 'login' %}">Open dashboard</a>
+            <a class="welcome-page-button" href="{% url 'login' %}">See your profile</a>
+        {% else %}
+            <a class="welcome-page-button" href="{% url 'login' %}">Appointment history</a>
+            <a class="welcome-page-button" href="{% url 'login' %}">Find specialists</a>
+            <a class="welcome-page-button" href="{% url 'login' %}">Your profile</a>
+            <a class="welcome-page-button" href="{% url 'login' %}">Contact us</a>
+        {% endif %}
+        </div>
+    {% else %}
+        <h1>How can I help you today?</h1>
+        <div id="welcome-buttons-container">
+            <a class="welcome-page-button" href="{% url 'login' %}">Log in</a>
+            <a class="welcome-page-button" href="{% url 'register' %}">Register</a>
+    {% endif %}
 {% endblock %}

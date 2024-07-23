@@ -11,12 +11,9 @@ from users.utils import register_with_act_code
 
 
 # Create your views here.
-# django sessions not working ://
 
 def index(request):
-    print(request.user)
-    print(request.session.session_key)
-    return render(request, "welcome-page.html", {"user": request.user})
+    return render(request, "welcome-page.html")
 
     # return render(request, "welcome-page.html", {"foo": "foo"})
 
@@ -31,7 +28,7 @@ def login_view(request):
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
-        print("SESSION KEY: ", request.session.session_key)
+        # print("SESSION KEY: ", request.session.session_key)
 
         try:
             user = User.objects.get(email=email)
@@ -59,6 +56,10 @@ def login_view(request):
 
 
 def register_view(request):
+    if request.user.is_authenticated:
+        messages.add_message(request, messages.INFO, "You are already logged in.")
+        return HttpResponseRedirect(reverse('index'))
+
     if request.method == "POST":
         email = request.POST.get("email")
         activation_code = request.POST.get("activation_code")

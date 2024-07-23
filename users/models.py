@@ -49,7 +49,11 @@ class User(AbstractBaseUser):
     email = models.EmailField(max_length=100, unique=True)
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=10, blank=True, null=True, unique=True)
+
+    # perm fields
     is_admin = models.BooleanField(default=False)
+    is_patient = models.BooleanField(default=False)
+    is_doctor = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.name} {self.surname} ({self.id})'

@@ -43,6 +43,16 @@ class CustomUserManager(BaseUserManager):
         return user
 
 
+class DocManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(role='d')
+
+
+class PatientManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(role='p')
+
+
 class User(AbstractBaseUser):
     name = models.CharField(max_length=20)
     surname = models.CharField(max_length=20)
@@ -50,15 +60,19 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=10, blank=True, null=True, unique=True)
 
+    ROLE_CHOICES = [
+        ('p', 'Patient'),
+        ('d', 'Doctor'),
+    ]
+
     # perm fields
     is_admin = models.BooleanField(default=False)
-    is_patient = models.BooleanField(default=False)
-    is_doctor = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f'{self.name} {self.surname} ({self.id})'
+    role = models.CharField(max_length=1, choices=ROLE_CHOICES, default='p', blank=True)
 
     objects = CustomUserManager()
+    doctors = DocManager()
+    patients = PatientManager()
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name', 'surname']
 
@@ -80,6 +94,14 @@ class User(AbstractBaseUser):
     def get_full_name(self):
         return f"{self.name} {self.surname}"
 
+    def is_patient(self):
+        return self.role == 'p'
+
+    def is_doctor(self):
+        return self.role == 'd'
+
+    def __str__(self):
+        return f'{self.name} {self.surname} ({self.id})'
 
 class Patient(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -141,6 +163,7 @@ class WorkBlock(models.Model):
 
 class WorkDay(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    # empty date - routine workday | empty day - specific date
     date = models.DateField(blank=True, null=True)
     day = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(1), MaxValueValidator(6)])
 

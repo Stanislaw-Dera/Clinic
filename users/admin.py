@@ -8,10 +8,10 @@ from .models import User
 
 class UserAdmin(admin.ModelAdmin):
     fields = ['name', 'surname', 'email', 'activation_code',
-              'password', 'is_active', 'is_doctor', 'is_patient']
+              'password', 'is_active', 'role']
 
 
-admin.site.register(User,UserAdmin)
+admin.site.register(User, UserAdmin)
 admin.site.register(models.Patient)
 admin.site.register(models.Doctor)
 admin.site.register(models.WorkDay)

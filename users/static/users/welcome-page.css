@@ -45,13 +45,13 @@ body {
 }
 
 .header {
+  align-items: center;
   display: flex;
   margin-bottom: 0.5rem;
 }
 @media (min-width: 768px) {
   .header {
     justify-content: space-between;
-    align-items: center;
   }
 }
 @media (max-width: 767px) {

@@ -44,14 +44,13 @@ body{
 .header{
   @media (min-width: 768px) {
     justify-content: space-between;
-    align-items: center;
   }
   @media (max-width: 767px) {
     text-align: center;
     justify-content: center;
     flex-wrap: wrap;
   }
-
+  align-items: center;
   display: flex;
   margin-bottom: 0.5rem;
 }

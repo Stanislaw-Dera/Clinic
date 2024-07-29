@@ -1,4 +1,6 @@
 import uuid
+from datetime import date
+from math import floor
 
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -144,11 +146,33 @@ class Doctor(models.Model):
         ("Vascular Surgeon", "Vascular Surgeon"),
     )
 
+    profile_picture = models.ImageField(upload_to='doc_pictures', null=True, blank=True)
+
     started_working = models.DateField(blank=True, null=True)
     specializations = models.CharField(choices=SPECIALIZATIONS, max_length=24)
+    bio = models.TextField(blank=True, null=True)
+
+    def short_serialize(self):
+        experience = date.today() - self.started_working
+        print(floor(experience.days/365))
+        return {
+            "full_name": self.user.get_full_name(),
+            "specializations": self.specializations,
+            "experience": floor(experience.days/365),
+            "profilePicture": self.profile_picture
+        }
+
+    def serialize(self):
+        return self.short_serialize().update({"bio": self.bio})
 
     def __str__(self):
         return f'{self.user.name} {self.user.surname} ({self.id})'
+
+
+class Certificate(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='certificates/')
 
 
 class WorkBlock(models.Model):

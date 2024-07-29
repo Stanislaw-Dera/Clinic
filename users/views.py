@@ -13,7 +13,7 @@ from users.utils import register_with_act_code
 # Create your views here.
 
 def index(request):
-    return render(request, "welcome-page.html")
+    return render(request, "users/welcome-page.html")
 
     # return render(request, "welcome-page.html", {"foo": "foo"})
 
@@ -50,9 +50,9 @@ def login_view(request):
             return HttpResponseRedirect(reverse("index"))
         else:
             messages.add_message(request, messages.ERROR, "Invalid login. If you have activation code, register")
-            return render(request, 'login.html')
+            return render(request, 'users/login.html')
 
-    return render(request, 'login.html')
+    return render(request, 'users/login.html')
 
 
 def register_view(request):
@@ -76,7 +76,7 @@ def register_view(request):
                 print('register: ', message)
                 messages.add_message(request, messages.ERROR, message)
 
-            return render(request, "register.html", context={
+            return render(request, "users/register.html", context={
                 'email': email,
                 'activation_code': activation_code,
                 'password': password,
@@ -86,7 +86,7 @@ def register_view(request):
         messages.add_message(request, messages.INFO, "Registered successfully. You can log in now.")
         return HttpResponseRedirect(reverse("index"))
 
-    return render(request, 'register.html')
+    return render(request, 'users/register.html')
 
 
 # @login_required(redirect_field_name=None)

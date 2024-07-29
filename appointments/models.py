@@ -45,6 +45,7 @@ class Appointment(models.Model):
     def serialize(self):
         return {
             'doctor': self.doctor.get_full_name(),
+            'patient': self.patient.get_full_name(),
             'date_time': self.date_time,
             'type': self.category.name,
             'status': self.status,

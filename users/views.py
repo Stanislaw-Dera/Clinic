@@ -2,22 +2,20 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from users.models import User
+from users.models import User, Doctor, Patient
 from users.utils import register_with_act_code
 
 
 # Create your views here.
 
+# Logging in and index views
+
 def index(request):
     return render(request, "users/welcome-page.html")
-
-    # return render(request, "welcome-page.html", {"foo": "foo"})
-
-    # dla view dla lekarzy, view dla pacjentów, view dla niezalogowanych, post=log_out
 
 
 def login_view(request):
@@ -95,3 +93,31 @@ def logout_view(request):
 
     messages.add_message(request, messages.INFO, "Logged out successfully.")
     return HttpResponseRedirect(reverse("index"))
+
+
+# other views
+
+def user_profile(request):
+    if request.user.role == 'd':
+        doc = Doctor.objects.get(user=request.user)
+        return JsonResponse({'doc': doc.serialize()})
+        # return render()
+
+    elif request.user.role == 'p':
+        patient = Patient.objects.get(user=request.user)
+        return JsonResponse({'patient': patient.serialize()})
+        # return render()
+
+
+def doc_profile(request, pk):
+    user = User.doctors.get(pk=pk)
+    doc = Doctor.objects.get(user=user)
+
+    pass # w templacie dodaj że jeżeli jesteś doktorem mie ma przycisku view schedule
+
+
+def patient_profile(request, pk):
+    if request.user.role == 'p':
+        return HttpResponseRedirect(reverse('user_profile'))
+
+    pass # doc view wraz z js'em do brania kalendarza z api

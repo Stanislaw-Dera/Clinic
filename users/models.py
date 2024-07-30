@@ -105,6 +105,7 @@ class User(AbstractBaseUser):
     def __str__(self):
         return f'{self.name} {self.surname} ({self.id})'
 
+
 class Patient(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=20)
@@ -113,6 +114,18 @@ class Patient(models.Model):
     blood_group = models.CharField(max_length=3)
     allergies_and_chronic_diseases = models.TextField(blank=True, null=True)
     extra_information = models.TextField(blank=True, null=True)
+
+    def serialize(self):
+        return {
+            'name': self.user.get_full_name(),
+            'phone_number': self.phone_number,
+            'email': self.user.email,
+            'address': self.address,
+            'extra_information': self.extra_information,
+            'date_of_birth': self.date_of_birth,
+            'blood_group': self.blood_group,
+            'allergies+chronic': self.allergies_and_chronic_diseases
+        }
 
     def __str__(self):
         return f'{self.user.name} {self.user.surname} ({self.id})'
@@ -154,16 +167,22 @@ class Doctor(models.Model):
 
     def short_serialize(self):
         experience = date.today() - self.started_working
-        print(floor(experience.days/365))
         return {
             "full_name": self.user.get_full_name(),
             "specializations": self.specializations,
             "experience": floor(experience.days/365),
-            "profilePicture": self.profile_picture
+            # "profilePicture": self.profile_picture
         }
 
     def serialize(self):
-        return self.short_serialize().update({"bio": self.bio})
+        experience = date.today() - self.started_working
+        return {
+            "full_name": self.user.get_full_name(),
+            "specializations": self.specializations,
+            "experience": floor(experience.days / 365),
+            # "profilePicture": self.profile_picture,
+            "bio": self.bio,
+        }
 
     def __str__(self):
         return f'{self.user.name} {self.user.surname} ({self.id})'

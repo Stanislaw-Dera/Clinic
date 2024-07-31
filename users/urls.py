@@ -11,4 +11,6 @@ urlpatterns = [
     path('profile/', views.user_profile, name='user_profile'),
     path('doctors/<int:pk>/', views.doc_profile, name='doc_profile'),
     path('patients/<int:pk>/', views.patient_profile, name='doc_profile'),
+
+    path('calendar/', views.default_calendar, name='calendar'),
 ]

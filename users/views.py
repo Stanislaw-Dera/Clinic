@@ -1,13 +1,16 @@
+from calendar import HTMLCalendar
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from users.models import User, Doctor, Patient
+from users.models import User, Doctor, Patient, WorkDay
 from users.utils import register_with_act_code
+from users.FullHTMLCalendar import FullHTMLCalendar
 
 
 # Create your views here.
@@ -113,11 +116,46 @@ def doc_profile(request, pk):
     user = User.doctors.get(pk=pk)
     doc = Doctor.objects.get(user=user)
 
-    pass # w templacie dodaj że jeżeli jesteś doktorem mie ma przycisku view schedule
+    pass  # w templacie dodaj że jeżeli jesteś doktorem mie ma przycisku view schedule
 
 
 def patient_profile(request, pk):
     if request.user.role == 'p':
         return HttpResponseRedirect(reverse('user_profile'))
 
-    pass # doc view wraz z js'em do brania kalendarza z api
+    pass  # doc view wraz z js'em do brania kalendarza z api
+
+
+# calendars api
+def default_calendar(request):
+    # type = request.GET.get('type')
+    doc_id = request.GET.get('doc-id')
+    month = request.GET.get('month')
+    year = request.GET.get('year')
+
+    user = User.doctors.get(pk=doc_id)
+
+    doc = Doctor.objects.get(user=user)
+
+    default_workdays = WorkDay.objects.filter(doctor=doc, date=None)
+
+    workdays_numeric_list = []
+
+    for workday in default_workdays:
+        workdays_numeric_list.append(workday.day)
+
+    custom_workdays = WorkDay.objects.filter(date__month=month, date__year=year, doctor=doc)
+    custom_days_data = {"free": [], "working": []}
+
+    for workday in custom_workdays:
+
+        custom_days_data["free"].append(workday.date.day) if workday.workblocks.all().count() == 0 \
+            else custom_days_data["working"].append(workday.date.day)
+
+    print(custom_days_data)
+    calendar = FullHTMLCalendar(custom_days_data)
+
+    for i in range(7):
+        calendar.cssclasses[i] = 'cal-day active' if i in workdays_numeric_list else 'cal-day disabled'
+
+    return HttpResponse(calendar.formatmonth(int(year), int(month)))

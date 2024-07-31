@@ -3,6 +3,10 @@ import calendar
 
 # with the HELP of AI :P
 class FullHTMLCalendar(calendar.HTMLCalendar):
+    def __init__(self, special_dates=None):
+        super().__init__()
+        self.special_dates = special_dates
+
     def formatmonth(self, theyear, themonth, withyear=True):
         v = []
         a = v.append
@@ -47,7 +51,34 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
         return '<tr>%s</tr>' % s
 
     def formatday(self, day, weekday, theyear, themonth):
-        if day == 0:
-            return '<td class="noday">&nbsp;</td>'  # day outside month
+        css_class = self.cssclasses[weekday]
+
+        if day in self.special_dates['free']:
+            css_class = 'cal-day disabled'
+
+        elif day in self.special_dates['working']:
+            css_class = 'cal-day active'
+
+        return f'<td class="{css_class}">{day}</td>'
+
+    def formatmonthname(self, theyear, themonth, withyear=True):
+        """
+        Return a month name as a table row.
+        """
+        # duplicate :(
+        prev_month = (themonth - 1) if themonth > 1 else 12
+        next_month = (themonth + 1) if themonth < 12 else 1
+        prev_year = theyear if themonth > 1 else theyear - 1
+        next_year = theyear if themonth < 12 else theyear + 1
+
+        if withyear:
+            s = '%s %s' % (calendar.month_name[themonth], theyear)
         else:
-            return '<td class="%s">%d</td>' % (self.cssclasses[weekday], day)
+            s = '%s' % calendar.month_name[themonth]
+        return (f'<tr><th colspan="7" class="{self.cssclass_month_head}">'
+                f'<img class="calendar-nav-image" src="" '
+                f'data-prev-month="{prev_month}" data-prev-year="{prev_year}">'  # nav button
+                f'{s}'
+                f'<img class="calendar-nav-image" src="" '
+                f'data-next-month="{next_month}" data-next-year="{next_year}">'  # nav button
+                '</th></tr>')

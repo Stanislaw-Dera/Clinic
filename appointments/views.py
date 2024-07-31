@@ -17,7 +17,7 @@ def patient_history(request):
     appointments = Appointment.objects.filter(patient=request.user)
 
     if appointments is None:
-        return HttpResponse("You haven't scheduled of completed any appointments yet. ")
+        return HttpResponse("You haven't scheduled nor completed any appointments yet. ")
 
     date_filter = request.GET.get('date')
     status_filter = request.GET.get('status')
@@ -36,5 +36,3 @@ def patient_history(request):
 
     print(appointments)
     return JsonResponse([appointment.serialize() for appointment in appointments], safe=False)
-
-

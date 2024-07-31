@@ -197,7 +197,7 @@ class Certificate(models.Model):
 class WorkBlock(models.Model):
     start = models.TimeField()
     duration = models.IntegerField(default=30)
-    work_day = models.ForeignKey("WorkDay", on_delete=models.CASCADE)
+    work_day = models.ForeignKey("WorkDay", on_delete=models.CASCADE, related_name='workblocks')
 
     def __str__(self):
         return (f'{self.work_day.doctor.user.name} {self.work_day.doctor.user.surname} workblock starting '
@@ -208,7 +208,7 @@ class WorkDay(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     # empty date - routine workday | empty day - specific date
     date = models.DateField(blank=True, null=True)
-    day = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(1), MaxValueValidator(6)])
+    day = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(5)])
 
     def __str__(self):
         if self.date is None:

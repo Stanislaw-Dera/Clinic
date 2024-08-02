@@ -2,15 +2,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.querySelector('#navbar')
     console.log(navbar.offsetHeight)
     const container = document.querySelector('.container')
-    console.log(container.offsetHeight)
-    container.style.marginTop = `${navbar.offsetHeight + 16}px`;
+    container.style.marginTop = `${navbar.offsetHeight + 32}px`;
 })
 
-document.addEventListener('scroll', () => {
+function addScrolledClass(){
   const navbar = document.querySelector('#navbar');
   if (window.scrollY > 0) {
     navbar.classList.add('scrolled');
   } else {
     navbar.classList.remove('scrolled');
   }
-});
+}
+
+document.addEventListener('scroll', addScrolledClass);
+document.addEventListener('touchstart', addScrolledClass)

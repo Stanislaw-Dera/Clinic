@@ -117,14 +117,14 @@ class Patient(models.Model):
 
     def serialize(self):
         return {
-            'name': self.user.get_full_name(),
+            'full_name': self.user.get_full_name(),
             'phone_number': self.phone_number,
             'email': self.user.email,
             'address': self.address,
             'extra_information': self.extra_information,
             'date_of_birth': self.date_of_birth,
             'blood_group': self.blood_group,
-            'allergies+chronic': self.allergies_and_chronic_diseases
+            'allergies_and_chronic': self.allergies_and_chronic_diseases
         }
 
     def __str__(self):

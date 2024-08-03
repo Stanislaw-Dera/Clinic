@@ -11,6 +11,7 @@
     <script src="{% static 'functional/nav/nav.js' %}"></script>
     {% block stylesheets %}{% endblock %}
     <link href="{% static 'functional/nav/nav.css' %}" rel="stylesheet">
+    <link href="{% static 'functional/buttons.css' %}" rel="stylesheet">
 
 </head>
 <body>
@@ -23,8 +24,7 @@
         </div>
     </div>
     <div class="container">
-        <img src="{% static 'welcome-page/clinic.jpg' %}" width="300px">
-        <p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p>
+        {% block body %}{% endblock %}
     </div>
 </body>
 </html>

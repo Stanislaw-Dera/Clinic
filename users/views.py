@@ -18,7 +18,7 @@ from users.FullHTMLCalendar import FullHTMLCalendar
 # Logging in and index views
 
 def index(request):
-    return render(request, "users/welcome-page.html")
+    return render(request, "users/welcome-page/welcome-page.html")
 
 
 def login_view(request):
@@ -51,9 +51,9 @@ def login_view(request):
             return HttpResponseRedirect(reverse("index"))
         else:
             messages.add_message(request, messages.ERROR, "Invalid login. If you have activation code, register")
-            return render(request, 'users/login.html')
+            return render(request, 'users/welcome-page/login.html')
 
-    return render(request, 'users/login.html')
+    return render(request, 'users/welcome-page/login.html')
 
 
 def register_view(request):
@@ -77,7 +77,7 @@ def register_view(request):
                 print('register: ', message)
                 messages.add_message(request, messages.ERROR, message)
 
-            return render(request, "users/register.html", context={
+            return render(request, "users/welcome-page/register.html", context={
                 'email': email,
                 'activation_code': activation_code,
                 'password': password,
@@ -87,7 +87,7 @@ def register_view(request):
         messages.add_message(request, messages.INFO, "Registered successfully. You can log in now.")
         return HttpResponseRedirect(reverse("index"))
 
-    return render(request, 'users/register.html')
+    return render(request, 'users/welcome-page/register.html')
 
 
 # @login_required(redirect_field_name=None)
@@ -103,13 +103,17 @@ def logout_view(request):
 def user_profile(request):
     if request.user.role == 'd':
         doc = Doctor.objects.get(user=request.user)
-        return JsonResponse({'doc': doc.serialize()})
-        # return render()
+        return render(request, 'users/functional/main-layout.html', {
+            "doctor": doc.serialize()
+        })
 
     elif request.user.role == 'p':
         patient = Patient.objects.get(user=request.user)
-        return JsonResponse({'patient': patient.serialize()})
-        # return render()
+        return render(request, 'users/functional/patient-profile.html', {
+            "patient": patient.serialize()
+        })
+
+    return render(request, 'users/functional/main-layout.html')
 
 
 def doc_profile(request, pk):
@@ -128,7 +132,6 @@ def patient_profile(request, pk):
 
 # calendars api
 def default_calendar(request):
-    # type = request.GET.get('type')
     doc_id = request.GET.get('doc-id')
     month = request.GET.get('month')
     year = request.GET.get('year')
@@ -159,3 +162,4 @@ def default_calendar(request):
         calendar.cssclasses[i] = 'cal-day active' if i in workdays_numeric_list else 'cal-day disabled'
 
     return HttpResponse(calendar.formatmonth(int(year), int(month)))
+# czas na frontend!!!

@@ -1,0 +1,57 @@
+{% extends 'users/functional/main-layout.html' %}
+{% load static %}
+{% block stylesheets %}
+<link href="{% static 'functional/profile/profile-assets.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <h2>Name: {{ patient.full_name }}<!--(Gender)--></h2>
+    <h2>Account type: Patient</h2>
+    <hr>
+    <form id="editable-info-form" name="editable-info-form">
+    {% if request.user.role == 'p' %}
+    <div class="form-group">
+        <label for="phone-number">Phone number</label>
+        <input id="phone-number" type="text" value="{{ patient.phone_number }}">
+    </div>
+    {% endif %}
+    <div class="form-group">
+        <label for="email">Email address</label>
+        <input id="email" type="text" value="{{ patient.email }}">
+    </div>
+    <div class="form-group">
+        <label for="address">Address</label>
+        <input id="address" type="text" value="{{ patient.address }}">
+    </div>
+    <div class="form-group">
+        <label for="extra-info">Extra information</label>
+        <input id="extra-info" type="text" value="{{ patient.extra_information }}">
+    </div>
+    {% if request.user.role == 'p' %}
+    <button class="custom-btn-light" id="save-changes">Save</button>
+    </form>
+    <hr>
+    <form id="not-editable-info-form" name="not-editable-info-form">
+    {% endif %}
+    <div class="form-group">
+        <label for="birth-date">Date of birth</label>
+        <input id="birth-date" class="disabled" type="text" value="{{ patient.date_of_birth }}">
+    </div>
+    <div class="form-group">
+       <label for="blood-group">Blood group</label>
+    <input id="blood-group" class="disabled" type="text" value="{{ patient.blood_group }}">
+    </div>
+    <div class="form-group">
+        <label for="allergies">Allergies and chronic diseases</label>
+        <input id="allergies" class="disabled" type="text" value="{{ patient.allergies_and_chronic }}">
+    </div>
+
+    </form>
+    {% if request.user.role == 'p' %}
+    <p>If any of the last 3 fields' information is incorrect, please contact the reception</p>
+    {% endif %}
+
+    {% if request.user.role == 'd' %}
+{#  schedule, last visits  #}
+    {% endif %}
+{% endblock %}

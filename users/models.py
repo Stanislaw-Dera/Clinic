@@ -165,22 +165,25 @@ class Doctor(models.Model):
     specializations = models.CharField(choices=SPECIALIZATIONS, max_length=24)
     bio = models.TextField(blank=True, null=True)
 
+    # not json-serializable
     def short_serialize(self):
         experience = date.today() - self.started_working
         return {
             "full_name": self.user.get_full_name(),
             "specializations": self.specializations,
-            "experience": floor(experience.days/365),
-            # "profilePicture": self.profile_picture
+            "experience": experience.days,
+            "profile_picture": self.profile_picture
         }
 
     def serialize(self):
         experience = date.today() - self.started_working
         return {
             "full_name": self.user.get_full_name(),
+            "email": self.user.email,
             "specializations": self.specializations,
-            "experience": floor(experience.days / 365),
-            # "profilePicture": self.profile_picture,
+            "experience": experience.days,
+            "started_working": self.started_working,
+            "profile_picture": self.profile_picture,
             "bio": self.bio,
         }
 

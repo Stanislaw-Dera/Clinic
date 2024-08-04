@@ -5,11 +5,13 @@
         <div id="welcome-buttons-container">
         {% if user.is_doctor %}
             <a class="welcome-page-button" href="{% url 'login' %}">Open dashboard</a>
-            <a class="welcome-page-button" href="{% url 'login' %}">See your profile</a>
+            <a class="welcome-page-button" href="{% url 'login' %}">Search for patients</a>
+            <a class="welcome-page-button" href="{% url 'user_profile' %}">Your profile</a>
+            <a class="welcome-page-button" href="{% url 'login' %}">Your reviews</a>
         {% else %}
             <a class="welcome-page-button" href="{% url 'login' %}">Appointment history</a>
             <a class="welcome-page-button" href="{% url 'login' %}">Find specialists</a>
-            <a class="welcome-page-button" href="{% url 'login' %}">Your profile</a>
+            <a class="welcome-page-button" href="{% url 'user_profile' %}">Your profile</a>
             <a class="welcome-page-button" href="{% url 'login' %}">Contact us</a>
         {% endif %}
         </div>

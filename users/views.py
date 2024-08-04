@@ -103,7 +103,8 @@ def logout_view(request):
 def user_profile(request):
     if request.user.role == 'd':
         doc = Doctor.objects.get(user=request.user)
-        return render(request, 'users/functional/main-layout.html', {
+        profile_picture = doc.profile_picture
+        return render(request, 'users/functional/doctor-profile-doc-view.html', {
             "doctor": doc.serialize()
         })
 
@@ -112,8 +113,6 @@ def user_profile(request):
         return render(request, 'users/functional/patient-profile.html', {
             "patient": patient.serialize()
         })
-
-    return render(request, 'users/functional/main-layout.html')
 
 
 def doc_profile(request, pk):

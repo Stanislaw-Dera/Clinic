@@ -1,0 +1,47 @@
+{% extends 'users/functional/main-layout.html' %}
+{% load static %}
+{% block stylesheets %}
+<link href="{% static 'functional/profile/profile-assets.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div id="user-info-container">
+{#        <form action="" method="POST" enctype="multipart/form-data">#}
+            <img src="/../media/{{ doctor.profile_picture }}" alt="profile picture"> {# + image changing (with page reload) #}
+{#        </form>#}
+        <div class="user-info">
+            <h1>Name: {{ doctor.full_name }}</h1>
+            <h1>Account type: Doctor</h1>
+        </div>
+    </div>
+    <hr>
+    <form id="not-editable-info-form" name="not-editable-info-form">
+       <div class="form-group">
+        <label for="specializations">Specializations</label>
+        <input id="specializations" class="input-field disabled" type="text" value="{{ doctor.specializations }}">
+        </div>
+
+        <div class="form-group">
+            <label for="started-working">Started working</label>
+            <input id="started-working" class="input-field disabled" type="text" value="{{ doctor.started_working }}">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <input id="email" class="input-field disabled" type="text" value="{{ doctor.email }}">
+        </div>
+    </form>
+    <p>If you would like to change the certification and/or specializations, provide the documents at the reception</p>
+    <hr>
+    <form id="editable-info-form" name="editable-info-form">
+        <div class="form-group">
+            <label for="biography">Biography</label>
+            <textarea id="biography" class="input-field">{{ doctor.bio }}</textarea>
+        </div>
+        <button class="custom-btn-light" id="save-changes">Save</button>
+    </form>
+
+    <hr>
+
+    {# availability + save button #}
+{% endblock %}

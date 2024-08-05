@@ -106,13 +106,18 @@ def user_profile(request):
         doc = Doctor.objects.get(user=request.user)
 
         if request.method == 'POST':
+            print("post", request.POST.get('bio'), "files", request.FILES)
+            if request.POST.get('bio'):
+                doc.bio = request.POST.get('bio')
+                doc.save()
 
-            print(request.POST, request.FILES)
+                return JsonResponse({'message': 'bio updated successfully'})
 
-            doc.profile_picture = request.FILES['profile_picture']
-            doc.save()
+            if request.FILES.get('profile_picture'):
+                doc.profile_picture = request.FILES['profile_picture']
+                doc.save()
 
-            print(doc.profile_picture)
+                return JsonResponse({'message': 'bio updated successfully'})
 
         return render(request, 'users/functional/doctor-profile-doc-view.html', {
             "doctor": doc.serialize()

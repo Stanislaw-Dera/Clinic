@@ -100,10 +100,20 @@ def logout_view(request):
 
 # other views
 
+@login_required(redirect_field_name=None)
 def user_profile(request):
     if request.user.role == 'd':
         doc = Doctor.objects.get(user=request.user)
-        profile_picture = doc.profile_picture
+
+        if request.method == 'POST':
+
+            print(request.POST, request.FILES)
+
+            doc.profile_picture = request.FILES['profile_picture']
+            doc.save()
+
+            print(doc.profile_picture)
+
         return render(request, 'users/functional/doctor-profile-doc-view.html', {
             "doctor": doc.serialize()
         })

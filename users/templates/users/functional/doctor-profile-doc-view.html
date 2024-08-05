@@ -3,12 +3,24 @@
 {% block stylesheets %}
 <link href="{% static 'functional/profile/profile-assets.css' %}" rel="stylesheet">
 {% endblock %}
+{% block script %}
+<script src="{% static 'functional/profile/profile.js' %}"></script>
+{% endblock %}
 
 {% block body %}
     <div id="user-info-container">
-{#        <form action="" method="POST" enctype="multipart/form-data">#}
-            <img src="/../media/{{ doctor.profile_picture }}" alt="profile picture"> {# + image changing (with page reload) #}
-{#        </form>#}
+        <form action="" method="POST" enctype="multipart/form-data" id="profile-picture-form">
+            {% csrf_token %}
+            <div class="image-container">
+                <img id="profile-picture-img" src="/../media/{{ doctor.profile_picture }}" alt="profile picture">
+                <div class="overlay">
+                    <span>Change profile picture</span>
+                </div>
+                <input type="file" id="profile-picture" name="profile_picture" accept="image/*">
+            </div>
+            <input type="submit" class="custom-btn-light save-button" id="save-picture" value="Change profile picture">
+        </form>
+
         <div class="user-info">
             <h1>Name: {{ doctor.full_name }}</h1>
             <h1>Account type: Doctor</h1>
@@ -38,7 +50,7 @@
             <label for="biography">Biography</label>
             <textarea id="biography" class="input-field">{{ doctor.bio }}</textarea>
         </div>
-        <button class="custom-btn-light" id="save-changes">Save</button>
+        <button class="custom-btn-light save-button" id="save-changes">Save</button>
     </form>
 
     <hr>

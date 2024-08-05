@@ -28,7 +28,7 @@
         <textarea id="extra-info" class="input-field">{{ patient.extra_information }}</textarea>
     </div>
     {% if request.user.role == 'p' %}
-    <button class="custom-btn-light" id="save-changes">Save</button>
+    <button class="custom-btn-light save-button" id="save-changes">Save</button>
     </form>
     <hr>
     <form id="not-editable-info-form" name="not-editable-info-form">

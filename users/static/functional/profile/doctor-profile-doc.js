@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch((e) => {
             console.log("error:", e)
+            alert(`error: ${e}`)
         })
     })
 });

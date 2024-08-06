@@ -117,7 +117,9 @@ def user_profile(request):
                 doc.profile_picture = request.FILES['profile_picture']
                 doc.save()
 
-                return JsonResponse({'message': 'bio updated successfully'})
+                # some photo validation?
+
+                return JsonResponse({'message': 'profile_picture updated successfully'})
 
         return render(request, 'users/functional/doctor-profile-doc-view.html', {
             "doctor": doc.serialize()
@@ -125,6 +127,26 @@ def user_profile(request):
 
     elif request.user.role == 'p':
         patient = Patient.objects.get(user=request.user)
+
+        try:
+            if request.method == 'POST':
+                print("post", request.POST)
+
+                if request.POST.get('email'):
+                    patient.user.email = request.POST.get('email')
+                    patient.user.save()
+                if request.POST.get('phone_number'):
+                    patient.phone_number = request.POST.get('phone_number')
+                if request.POST.get('address'):
+                    patient.address = request.POST.get('address')
+                if request.POST.get('extra_info'):
+                    patient.extra_information = request.POST.get('extra_info')
+
+                patient.save()
+                return JsonResponse({'message': 'data updated successfully'})
+        except ValidationError as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
         return render(request, 'users/functional/patient-profile.html', {
             "patient": patient.serialize()
         })

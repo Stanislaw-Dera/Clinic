@@ -3,6 +3,9 @@
 {% block stylesheets %}
 <link href="{% static 'functional/profile/profile-assets.css' %}" rel="stylesheet">
 {% endblock %}
+{% block script %}
+<script src="{% static 'functional/profile/patient-profile-patient.js' %}"></script>
+{% endblock %}
 
 {% block body %}
     <h1>Name: {{ patient.full_name }}<!--(Gender)--></h1>

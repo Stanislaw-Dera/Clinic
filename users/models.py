@@ -1,16 +1,15 @@
+import re
 import uuid
 from datetime import date
-from math import floor
 
 from django.contrib.auth.base_user import BaseUserManager
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 # Create your models here.
 
 from django.contrib.auth.models import AbstractBaseUser
-# from users.user_managing import CustomUserManager
-
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, name, surname, password=None):
@@ -55,6 +54,16 @@ class PatientManager(models.Manager):
         return super().get_queryset().filter(role='p')
 
 
+email_exp = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+def check_email(email):
+    return True if re.fullmatch(email_exp, email) else False
+
+
+phone_num_exp = r'\+[0-9\s]+'
+def check_phone_number(phone_number):
+    return True if re.fullmatch(phone_num_exp, str(phone_number)) else False
+
+
 class User(AbstractBaseUser):
     name = models.CharField(max_length=20)
     surname = models.CharField(max_length=20)
@@ -78,9 +87,15 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name', 'surname']
 
+    def clean(self):
+        if not check_email(self.email):
+            raise ValidationError('Email is not valid')
+
     def save(self, *args, **kwargs):
         if not self.activation_code:
             self.activation_code = str(uuid.uuid4())[:10]
+
+        self.clean()
         super().save(*args, **kwargs)
 
     @property
@@ -129,6 +144,16 @@ class Patient(models.Model):
 
     def __str__(self):
         return f'{self.user.name} {self.user.surname} ({self.id})'
+
+    def clean(self):
+        if not check_phone_number(self.phone_number):
+            raise ValidationError('Invalid phone number')
+        # other field are kind of free to the user
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
 
 
 class Doctor(models.Model):

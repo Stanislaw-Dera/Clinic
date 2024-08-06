@@ -1,0 +1,61 @@
+//body tag for all pages
+body{
+  color: #414141
+}
+
+#navbar {
+  align-items: center;
+  display: flex;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: rgba(241, 241, 241, 0.8); // Ustawienie przezroczystości
+  position: fixed; // Utrzymanie na górze strony
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+
+  backdrop-filter: blur(5px);
+
+  @media (min-width: 768px) {
+    justify-content: space-between;
+  }
+
+  @media (max-width: 767px) {
+    width: 100vw;
+    text-align: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  &.scrolled {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Dodanie cienia po scrollu
+    background-color: rgba(241, 241, 241, 0.9); // Zmiana koloru tła
+  }
+}
+
+#logo {
+  @media (min-width: 768px) {
+    height: 100%;
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+}
+
+.icons {
+  display: flex;
+  gap: 3rem;
+
+  img {
+    @media (min-width: 768px) {
+      height: 100px;
+      width: auto;
+    }
+
+    @media (max-width: 767px){
+      height:50px
+    }
+  }
+}

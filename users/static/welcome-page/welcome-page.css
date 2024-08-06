@@ -45,13 +45,13 @@ body {
 }
 
 .header {
+  align-items: center;
   display: flex;
   margin-bottom: 0.5rem;
 }
 @media (min-width: 768px) {
   .header {
     justify-content: space-between;
-    align-items: center;
   }
 }
 @media (max-width: 767px) {
@@ -81,6 +81,12 @@ body {
   text-decoration: underline;
 }
 
+@media (min-width: 768px) {
+  .page-body {
+    margin-top: 3rem;
+  }
+}
+
 #welcome-buttons-container {
   display: flex;
   justify-content: center;
@@ -88,11 +94,15 @@ body {
   flex-wrap: wrap;
   text-align: center;
   padding: 10px;
+  margin: auto;
+}
+@media (min-width: 768px) {
+  #welcome-buttons-container {
+    width: 768px;
+  }
 }
 
 .welcome-page-button {
-  flex: 1 1 20%;
-  max-width: 20%;
   margin: 0.66rem;
   background-color: #5b5b5f;
   color: #CDCDCD;
@@ -109,10 +119,16 @@ body {
   text-decoration: none;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
-@media (max-width: 768px) {
+@media (min-width: 768px) {
+  .welcome-page-button {
+    flex: 1 1 300px;
+    width: 350px;
+  }
+}
+@media (max-width: 767px) {
   .welcome-page-button {
     flex: 1 1 100%;
-    max-width: 100%;
+    max-width: 80%;
   }
 }
 .welcome-page-button:hover {
@@ -156,15 +172,6 @@ body {
 @media (max-width: 767px) {
   #login-buttons-container {
     padding: 0.3rem 1rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .page-body {
-    margin-top: 3rem;
-  }
-  .page-body .welcome-page-button {
-    max-width: 300px;
   }
 }
 

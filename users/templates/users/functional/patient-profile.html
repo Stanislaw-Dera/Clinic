@@ -1,0 +1,60 @@
+{% extends 'users/functional/main-layout.html' %}
+{% load static %}
+{% block stylesheets %}
+<link href="{% static 'functional/profile/profile-assets.css' %}" rel="stylesheet">
+{% endblock %}
+{% block script %}
+<script src="{% static 'functional/profile/patient-profile-patient.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <h1>Name: {{ patient.full_name }}<!--(Gender)--></h1>
+    <h1>Account type: Patient</h1>
+    <hr>
+    <form id="editable-info-form" name="editable-info-form">
+    {% if request.user.role == 'p' %}
+    <div class="form-group">
+        <label for="phone-number">Phone number</label>
+        <input id="phone-number" class="input-field" type="text" value="{{ patient.phone_number }}">
+    </div>
+    {% endif %}
+    <div class="form-group">
+        <label for="email">Email address</label>
+        <input id="email" class="input-field" type="text" value="{{ patient.email }}">
+    </div>
+    <div class="form-group">
+        <label for="address">Address</label>
+        <input id="address" class="input-field" type="text" value="{{ patient.address }}">
+    </div>
+    <div class="form-group">
+        <label for="extra-info">Extra information</label>
+        <textarea id="extra-info" class="input-field">{{ patient.extra_information }}</textarea>
+    </div>
+    {% if request.user.role == 'p' %}
+    <button class="custom-btn-light save-button" id="save-changes">Save</button>
+    </form>
+    <hr>
+    <form id="not-editable-info-form" name="not-editable-info-form">
+    {% endif %}
+    <div class="form-group">
+        <label for="birth-date">Date of birth</label>
+        <input id="birth-date" class="disabled input-field" type="text" value="{{ patient.date_of_birth }}">
+    </div>
+    <div class="form-group">
+       <label for="blood-group">Blood group</label>
+    <input id="blood-group" class="disabled input-field" type="text" value="{{ patient.blood_group }}">
+    </div>
+    <div class="form-group">
+        <label for="allergies">Allergies and chronic diseases</label>
+        <textarea id="allergies" class="disabled input-field">{{ patient.allergies_and_chronic }}"</textarea>
+    </div>
+
+    </form>
+    {% if request.user.role == 'p' %}
+    <p>If any of the last 3 fields' information is incorrect, please contact the reception</p>
+    {% endif %}
+
+    {% if request.user.role == 'd' %}
+{#  schedule, last visits  #}
+    {% endif %}
+{% endblock %}

@@ -1,23 +1,24 @@
+from calendar import HTMLCalendar
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from users.models import User
+from users.models import User, Doctor, Patient, WorkDay
 from users.utils import register_with_act_code
+from users.FullHTMLCalendar import FullHTMLCalendar
 
 
 # Create your views here.
 
+# Logging in and index views
+
 def index(request):
-    return render(request, "welcome-page.html")
-
-    # return render(request, "welcome-page.html", {"foo": "foo"})
-
-    # dla view dla lekarzy, view dla pacjentów, view dla niezalogowanych, post=log_out
+    return render(request, "users/welcome-page/welcome-page.html")
 
 
 def login_view(request):
@@ -50,9 +51,9 @@ def login_view(request):
             return HttpResponseRedirect(reverse("index"))
         else:
             messages.add_message(request, messages.ERROR, "Invalid login. If you have activation code, register")
-            return render(request, 'login.html')
+            return render(request, 'users/welcome-page/login.html')
 
-    return render(request, 'login.html')
+    return render(request, 'users/welcome-page/login.html')
 
 
 def register_view(request):
@@ -76,7 +77,7 @@ def register_view(request):
                 print('register: ', message)
                 messages.add_message(request, messages.ERROR, message)
 
-            return render(request, "register.html", context={
+            return render(request, "users/welcome-page/register.html", context={
                 'email': email,
                 'activation_code': activation_code,
                 'password': password,
@@ -86,7 +87,7 @@ def register_view(request):
         messages.add_message(request, messages.INFO, "Registered successfully. You can log in now.")
         return HttpResponseRedirect(reverse("index"))
 
-    return render(request, 'register.html')
+    return render(request, 'users/welcome-page/register.html')
 
 
 # @login_required(redirect_field_name=None)
@@ -95,3 +96,106 @@ def logout_view(request):
 
     messages.add_message(request, messages.INFO, "Logged out successfully.")
     return HttpResponseRedirect(reverse("index"))
+
+
+# other views
+
+@login_required(redirect_field_name=None)
+def user_profile(request):
+    if request.user.role == 'd':
+        doc = Doctor.objects.get(user=request.user)
+
+        if request.method == 'POST':
+            print("post", request.POST.get('bio'), "files", request.FILES)
+            if request.POST.get('bio'):
+                doc.bio = request.POST.get('bio')
+                doc.save()
+
+                return JsonResponse({'message': 'bio updated successfully'})
+
+            if request.FILES.get('profile_picture'):
+                doc.profile_picture = request.FILES['profile_picture']
+                doc.save()
+
+                # some photo validation?
+
+                return JsonResponse({'message': 'profile_picture updated successfully'})
+
+        return render(request, 'users/functional/doctor-profile-doc-view.html', {
+            "doctor": doc.serialize()
+        })
+
+    elif request.user.role == 'p':
+        patient = Patient.objects.get(user=request.user)
+
+        try:
+            if request.method == 'POST':
+                print("post", request.POST)
+
+                if request.POST.get('email'):
+                    patient.user.email = request.POST.get('email')
+                    patient.user.save()
+                if request.POST.get('phone_number'):
+                    patient.phone_number = request.POST.get('phone_number')
+                if request.POST.get('address'):
+                    patient.address = request.POST.get('address')
+                if request.POST.get('extra_info'):
+                    patient.extra_information = request.POST.get('extra_info')
+
+                patient.save()
+                return JsonResponse({'message': 'data updated successfully'})
+        except ValidationError as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+        return render(request, 'users/functional/patient-profile.html', {
+            "patient": patient.serialize()
+        })
+
+
+def doc_profile(request, pk):
+    user = User.doctors.get(pk=pk)
+    doc = Doctor.objects.get(user=user)
+
+    pass  # w templacie dodaj że jeżeli jesteś doktorem mie ma przycisku view schedule
+
+
+def patient_profile(request, pk):
+    if request.user.role == 'p':
+        return HttpResponseRedirect(reverse('user_profile'))
+
+    pass  # doc view wraz z js'em do brania kalendarza z api
+
+
+# calendars api
+def default_calendar(request):
+    doc_id = request.GET.get('doc-id')
+    month = request.GET.get('month')
+    year = request.GET.get('year')
+
+    user = User.doctors.get(pk=doc_id)
+
+    doc = Doctor.objects.get(user=user)
+
+    default_workdays = WorkDay.objects.filter(doctor=doc, date=None)
+
+    workdays_numeric_list = []
+
+    for workday in default_workdays:
+        workdays_numeric_list.append(workday.day)
+
+    custom_workdays = WorkDay.objects.filter(date__month=month, date__year=year, doctor=doc)
+    custom_days_data = {"free": [], "working": []}
+
+    for workday in custom_workdays:
+
+        custom_days_data["free"].append(workday.date.day) if workday.workblocks.all().count() == 0 \
+            else custom_days_data["working"].append(workday.date.day)
+
+    print(custom_days_data)
+    calendar = FullHTMLCalendar(custom_days_data)
+
+    for i in range(7):
+        calendar.cssclasses[i] = 'cal-day active' if i in workdays_numeric_list else 'cal-day disabled'
+
+    return HttpResponse(calendar.formatmonth(int(year), int(month)))
+# czas na frontend!!!

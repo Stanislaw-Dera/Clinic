@@ -48,12 +48,11 @@ def doctor_calendar(request):
     if week and week.isdigit():
         try:
             wk = calendar.get_full_weeks(year, month)[int(week)]
-            print('week', wk)
         except IndexError:
             return JsonResponse({'error': 'Invalid week'}, status=400)
 
-        return JsonResponse({'week': calendar.formatweek(wk, year, month), 'data': {
-            'weekNo': week, 'month': month, 'year': year
-        }}, status=200)
+        return JsonResponse({'week': calendar.formatweek(wk, year, month, week)}, status=200)
 
-    return JsonResponse({'month': calendar.formatmonth(year, month), 'data': {'month': month, 'year': year}}, status=200)
+    return JsonResponse({'month': calendar.formatmonth(year, month)}, status=200)
+# teraz pobierz dane na profilu doktora, napisz view do odczytywania workdayów (asynchronicznie)
+# i umieść te dane w ładny sposoób :)

@@ -1,5 +1,12 @@
 import calendar
 
+def get_months(theyear, themonth):
+    return {
+        'prev_month': (themonth - 1) if themonth > 1 else 12,
+        'next_month': (themonth + 1) if themonth < 12 else 1,
+        'prev_year': theyear if themonth > 1 else theyear - 1,
+        'next_year': theyear if themonth < 12 else theyear + 1
+    }
 
 # with the HELP of AI :P
 class FullHTMLCalendar(calendar.HTMLCalendar):
@@ -28,13 +35,10 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
         month_days = cal.monthdays2calendar(theyear, themonth)
 
         # Add the last days of the previous month and the first days of the next month
-        prev_month = (themonth - 1) if themonth > 1 else 12
-        next_month = (themonth + 1) if themonth < 12 else 1
-        prev_year = theyear if themonth > 1 else theyear - 1
-        next_year = theyear if themonth < 12 else theyear + 1
+        months = get_months(theyear, themonth)
 
-        prev_month_days = cal.monthdays2calendar(prev_year, prev_month)
-        next_month_days = cal.monthdays2calendar(next_year, next_month)
+        prev_month_days = cal.monthdays2calendar(months["prev_year"], months["prev_month"])
+        next_month_days = cal.monthdays2calendar(months["next_year"], months["next_month"])
 
         # Ensure the first and last week are full
         for i in month_days[0]:
@@ -46,9 +50,46 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
 
         return month_days
 
-    def formatweek(self, theweek, theyear, themonth):
+    def formatweek(self, theweek, theyear, themonth, *args):
+        """IF args are present, generate a header. First argument must be week number"""
+
+        print("args:", args)
         s = ''.join(self.formatday(d, wd, theyear, themonth) for (d, wd) in theweek)
-        return '<tr>%s</tr>' % s
+
+        if not args:
+            return '<tr>%s</tr>' % s
+
+        months = get_months(theyear, themonth)
+
+        m_range = calendar.monthrange(theyear, themonth)
+
+        week_num = args[0]
+
+        week_num = int(week_num)  # Value error? Hopefully
+
+        if theweek[0][0] < 8:
+            previous = {'week': len(self.get_full_weeks(theyear, themonth)) - 1, 'month': months['prev_month'],
+                        'year': months['prev_year']}
+        else:
+            previous = {'week': week_num - 1, 'month': themonth, 'year': theyear}
+
+        if theweek[6][0] == m_range[1]:
+            next = {'week': 0, 'month': months['next_month'], 'year': months['next_year']}
+        elif theweek[0][0] > theweek[6][0]:
+            next = {'week': 1, 'month': months['next_month'], 'year': months['next_year']}
+        else:
+            next = {'week': week_num + 1, 'month': themonth, 'year': theyear}
+
+        return (f'<table><tr><th colspan="7" class="week-header">'
+                f'<img class="calendar-nav-image" src="" '
+                f'data-prev-month="{previous["month"]}" data-prev-year="{previous["year"]}" data-prev-week="{previous["week"]}">'  # nav button
+                f'<div>Week {week_num + 1} of {calendar.month_name[themonth]}</div>'  # +1 for visual purposes
+                f'<img class="calendar-nav-image" src="" '
+                f'data-next-month="{next["month"]}" data-next-year="{next["year"]}" data-next-week="{next["week"]}">'  # nav button
+                '</th></tr>'
+                f'<tr>{s}</tr>'
+                '</table>')
+
 
     def formatday(self, day, weekday, theyear, themonth):
         css_class = self.cssclasses[weekday]
@@ -65,11 +106,7 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
         """
         Return a month name as a table row.
         """
-        # duplicate :(
-        prev_month = (themonth - 1) if themonth > 1 else 12
-        next_month = (themonth + 1) if themonth < 12 else 1
-        prev_year = theyear if themonth > 1 else theyear - 1
-        next_year = theyear if themonth < 12 else theyear + 1
+        months = get_months(theyear, themonth)
 
         if withyear:
             s = '%s %s' % (calendar.month_name[themonth], theyear)
@@ -77,8 +114,8 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
             s = '%s' % calendar.month_name[themonth]
         return (f'<tr><th colspan="7" class="{self.cssclass_month_head}">'
                 f'<img class="calendar-nav-image" src="" '
-                f'data-prev-month="{prev_month}" data-prev-year="{prev_year}">'  # nav button
+                f'data-prev-month="{months["prev_month"]}" data-prev-year="{months["prev_year"]}">'  # nav button
                 f'{s}'
                 f'<img class="calendar-nav-image" src="" '
-                f'data-next-month="{next_month}" data-next-year="{next_year}">'  # nav button
+                f'data-next-month="{months["next_month"]}" data-next-year="{months["next_year"]}">'  # nav button
                 '</th></tr>')

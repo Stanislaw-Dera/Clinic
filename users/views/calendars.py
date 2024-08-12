@@ -14,7 +14,7 @@ def doctor_calendar(request):
     try:
         user = User.doctors.get(pk=doc_id)
         doc = Doctor.objects.get(user=user)
-    except Exception:
+    except (User.DoesNotExist, Doctor.DoesNotExist):
         return JsonResponse({'error': "doctor wasn't found"}, status=400)
 
     if not month.isdigit() or not year.isdigit():

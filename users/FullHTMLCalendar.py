@@ -17,7 +17,7 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
     def formatmonth(self, theyear, themonth, withyear=True):
         v = []
         a = v.append
-        a('<table border="0" cellpadding="0" cellspacing="0" class="month">')
+        a('<div class="calendar">')
         a('\n')
         a(self.formatmonthname(theyear, themonth, withyear=withyear))
         a('\n')
@@ -26,7 +26,7 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
         for week in weeks:
             a(self.formatweek(week, theyear, themonth))
             a('\n')
-        a('</table>')
+        a('</div>')
         a('\n')
         return ''.join(v)
 
@@ -57,7 +57,7 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
         s = ''.join(self.formatday(d, wd, theyear, themonth) for (d, wd) in theweek)
 
         if not args:
-            return '<tr>%s</tr>' % s
+            return '<div class="week">%s</div>' % s
 
         months = get_months(theyear, themonth)
 
@@ -80,15 +80,16 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
         else:
             next = {'week': week_num + 1, 'month': themonth, 'year': theyear}
 
-        return (f'<table><tr><th colspan="7" class="week-header">'
-                f'<img class="calendar-nav-image" src="" '
+        return ('<div class="calendar">'
+                '<div class="calendar-header">'
+                f'<img class="calendar-nav-image" src="/static/functional/calendar/polygon-left.svg" '
                 f'data-prev-month="{previous["month"]}" data-prev-year="{previous["year"]}" data-prev-week="{previous["week"]}">'  # nav button
                 f'<div>Week {week_num + 1} of {calendar.month_name[themonth]}</div>'  # +1 for visual purposes
-                f'<img class="calendar-nav-image" src="" '
+                f'<img class="calendar-nav-image" src="/static/functional/calendar/polygon-right.svg" '
                 f'data-next-month="{next["month"]}" data-next-year="{next["year"]}" data-next-week="{next["week"]}">'  # nav button
-                '</th></tr>'
-                f'<tr>{s}</tr>'
-                '</table>')
+                '</div>'
+                f'<div class="week">{s}</div>'
+                f'</div>')
 
 
     def formatday(self, day, weekday, theyear, themonth):
@@ -100,7 +101,7 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
         elif day in self.special_dates['working']:
             css_class = 'cal-day active'
 
-        return f'<td class="{css_class}">{day}</td>'
+        return f'<div class="{css_class}" data-day="{day}" data-month="{themonth}" data-year="{theyear}">{day}</div>'
 
     def formatmonthname(self, theyear, themonth, withyear=True):
         """
@@ -112,10 +113,10 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
             s = '%s %s' % (calendar.month_name[themonth], theyear)
         else:
             s = '%s' % calendar.month_name[themonth]
-        return (f'<tr><th colspan="7" class="{self.cssclass_month_head}">'
-                f'<img class="calendar-nav-image" src="" '
+        return (f'<div class="calendar-header">'
+                f'<img class="calendar-nav-image" src="/static/functional/calendar/polygon-left.svg" '
                 f'data-prev-month="{months["prev_month"]}" data-prev-year="{months["prev_year"]}">'  # nav button
-                f'{s}'
-                f'<img class="calendar-nav-image" src="" '
+                f'<div>{s}</div>'
+                f'<img class="calendar-nav-image" src="/static/functional/calendar/polygon-right.svg" '
                 f'data-next-month="{months["next_month"]}" data-next-year="{months["next_year"]}">'  # nav button
-                '</th></tr>')
+                '</div>')

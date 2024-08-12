@@ -60,4 +60,28 @@ document.addEventListener('DOMContentLoaded', () => {
             alert(`error: ${e}`)
         })
     })
+
+    // availability calendar
+    Date.prototype.getWeekOfMonth = function() {
+      let firstWeekday = new Date(this.getFullYear(), this.getMonth(), 1).getDay() - 1;
+      if (firstWeekday < 0) firstWeekday = 6;
+      let offsetDate = this.getDate() + firstWeekday - 1;
+      return Math.floor(offsetDate / 7);
+    }
+
+    const now = new Date(Date.now())
+
+    console.log(now.getUTCMonth())
+    console.log('month:', now.getMonth())
+
+    fetch('http://localhost:8000/calendar?' + new URLSearchParams({
+        "doc-id": '3',
+        year: now.getUTCFullYear(),
+        month: now.getUTCMonth() + 1,
+        week: now.getWeekOfMonth()
+    }).toString())
+    .then(res => res.json())
+    .then(response => {
+        document.querySelector('#availability').innerHTML = response.week
+    })
 });

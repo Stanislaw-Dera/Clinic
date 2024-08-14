@@ -77,11 +77,77 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('http://localhost:8000/calendar?' + new URLSearchParams({
         "doc-id": '3',
         year: now.getUTCFullYear(),
-        month: now.getUTCMonth() + 1,
+        month: now.getUTCMonth() + 1, // because js months starts at 0
         week: now.getWeekOfMonth()
     }).toString())
     .then(res => res.json())
     .then(response => {
-        document.querySelector('#availability').innerHTML = response.week
+        console.log(response);
+        document.querySelector('#availability').innerHTML = `<div id="hours-selection"><div id="button-grid"></div></div>` +  response.week;
+    })
+    .then(() => {
+        document.querySelectorAll(".cal-day").forEach((element) => {
+            attachWorkHoursChanging(element);
+        })
     })
 });
+
+function attachWorkHoursChanging(arg){
+    console.log("arg:", arg.dataset)
+
+    arg.addEventListener('click', () => {
+        // select hours changing field
+        fetch('http://localhost:8000/get-workhours?' + new URLSearchParams({
+            "doc-id": '3',
+            year: arg.dataset.year,
+            month: arg.dataset.month,
+            day: arg.dataset.day
+        }).toString())
+        .then(res => res.json())
+        .then(response => {
+            let workHoursSelection = document.querySelector("#hours-selection");
+            let grid = workHoursSelection.querySelector("#button-grid");
+
+            workHoursSelection.classList.remove("show");
+            updateGrid(response, grid);
+            workHoursSelection.classList.add('show');
+        })
+        .catch((e) => {
+            console.log("error:", e);
+            alert(`error: ${e}`);
+        })
+    })
+}
+
+function updateGrid(response, grid) {
+    animateButtons(() => {
+        grid.innerHTML = "";
+
+        for (const hour in response.hours) {
+            const status = response.hours[hour].status
+            const button = elementFromHtml(`<div class="${status}">${hour}</div>`);
+            grid.appendChild(button);
+
+            button.addEventListener('click', () => {
+                if(button.classList.contains("free")){
+                    button.classList.remove('free')
+                    button.classList.add('working')
+
+                } else if(button.classList.contains("working")){
+                    button.classList.remove('working')
+                    button.classList.add('free')
+
+                } else {
+                    alert(`You can't unbook patient's visits. `)
+                }
+            })
+        }
+
+        const newButtons = grid.children;
+        for (let button of newButtons) {
+            setTimeout(() => {
+                button.classList.add('show');
+            }, 100);
+        }
+    }, grid);
+}

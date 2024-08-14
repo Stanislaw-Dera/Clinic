@@ -31,3 +31,21 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+function elementFromHtml(html){
+    const temp = document.createElement('temp');
+
+    temp.innerHTML = html.trim();
+
+    return temp.firstElementChild;
+}
+
+function animateButtons(callback, grid) {
+    const buttons = grid.children;
+    for (let button of buttons) {
+        button.classList.remove('show');
+    }
+    setTimeout(() => {
+        callback();
+    }, 600);
+}

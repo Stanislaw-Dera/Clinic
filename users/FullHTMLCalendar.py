@@ -53,7 +53,7 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
     def formatweek(self, theweek, theyear, themonth, *args):
         """IF args are present, generate a header. First argument must be week number"""
 
-        print("args:", args)
+        print("formatweek args:", args)
         s = ''.join(self.formatday(d, wd, theyear, themonth) for (d, wd) in theweek)
 
         if not args:

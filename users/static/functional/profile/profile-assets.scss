@@ -152,6 +152,10 @@ form {
     text-align: center;
 
     img {
+      @media(max-width: 767px){
+        margin: auto;
+      }
+
       display: block;
       width: 100%;
       border-radius: 4px;
@@ -202,6 +206,72 @@ form {
 }
 
 #availability {
+
+  #hours-selection {
+    margin: auto;
+    width: 70%;
+    background-color: #f4f4f4;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+
+    &.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+  }
+
+  #button-grid {
+    display: grid;
+    @media(max-width: 767px){
+      grid-template-columns: repeat(2, 1fr);
+    } @media(min-width: 768px){
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    grid-gap: 10px;
+    width: 100%;
+
+    div {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 1rem;
+
+      box-sizing: border-box;
+
+      opacity: 0;
+      transform: translateY(20px);
+      transition: border 0.1s ease, transform 0.1s ease;
+
+
+      &.show{
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      &.appointment {
+        background-color: #cccccc;
+      }
+
+      &.working {
+        background-color: #DDDDDD;
+        border: 3px #9a9a9a solid
+      }
+
+      &.free {
+        background-color: #DDDDDD;
+        color: #2c2c2c;
+      }
+    }
+
+  }
+
   .calendar {
     .calendar-header {
       display: flex;
@@ -238,8 +308,8 @@ form {
       .cal-day {
         font-size: 1.5rem;
 
-        width: 120px;
-        height: 120px;
+        width: 100px;
+        height: 100px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -251,6 +321,10 @@ form {
         &.active {
           background-color: #e0e0e0;
           cursor: pointer;
+
+          &:hover{
+            background-color: darken(#e0e0e0, 5%);
+          }
         }
 
         &.disabled {

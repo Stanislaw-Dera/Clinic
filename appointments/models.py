@@ -15,7 +15,7 @@ class CategoryManager(models.Manager):
 
 class Category(models.Model):
     name = models.CharField(max_length=32)
-    duration = models.PositiveSmallIntegerField()
+    duration = models.PositiveSmallIntegerField()  # work blocks
     public = models.BooleanField(default=False)
 
     objects = CategoryManager()

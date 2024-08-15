@@ -1,4 +1,5 @@
 // user profile
+selectedDay = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.querySelector('#profile-picture');
@@ -109,7 +110,7 @@ function attachWorkHoursChanging(arg){
             let grid = workHoursSelection.querySelector("#button-grid");
 
             workHoursSelection.classList.remove("show");
-            updateGrid(response, grid);
+            updateGrid(response, grid, arg.dataset);
             workHoursSelection.classList.add('show');
         })
         .catch((e) => {
@@ -119,7 +120,7 @@ function attachWorkHoursChanging(arg){
     })
 }
 
-function updateGrid(response, grid) {
+function updateGrid(response, grid, dateSet) {
     animateButtons(() => {
         grid.innerHTML = "";
 
@@ -129,18 +130,33 @@ function updateGrid(response, grid) {
             grid.appendChild(button);
 
             button.addEventListener('click', () => {
-                if(button.classList.contains("free")){
-                    button.classList.remove('free')
-                    button.classList.add('working')
+                const csrftoken = getCookie('csrftoken')
 
-                } else if(button.classList.contains("working")){
-                    button.classList.remove('working')
-                    button.classList.add('free')
+                const formData = new FormData();
+                formData.append('date', `${dateSet.year} ${dateSet.month} ${dateSet.day} ${hour}`)
+                formData.append('doc-id', 3)
 
-                } else {
-                    alert(`You can't unbook patient's visits. `)
-                }
-            })
+                fetch('/change-workblock', {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': csrftoken},
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result)
+                    if(result.block_status === 'free'){
+                        button.classList.add('free')
+                        button.classList.remove('working')
+                    } else if(result.block_status === 'working'){
+                        button.classList.add('working')
+                        button.classList.remove('free')
+                    }
+                })
+                .catch((e) => {
+                    console.log("error:", e)
+                    alert(`error: ${e}`)
+                })
+            });
         }
 
         const newButtons = grid.children;

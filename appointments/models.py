@@ -27,6 +27,13 @@ class Category(models.Model):
         return self.name
 
 
+class DocAppointmentManager(models.Manager):
+    def filter_by_doc(self, doc):
+        return super().get_queryset().filter(doctor=doc)
+
+    def filter_by_date(self, date):
+        return super().get_queryset().filter(date=date)
+
 class Appointment(models.Model):
     doctor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='doctor_appointments')
     patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='patient_appointments')
@@ -41,6 +48,9 @@ class Appointment(models.Model):
     )
 
     status = models.CharField(choices=status_choices, max_length=10, default='Upcoming')
+
+    objects = models.Manager()  # The default manager.
+    doc_appointments = DocAppointmentManager()
 
     def serialize(self):
         return {

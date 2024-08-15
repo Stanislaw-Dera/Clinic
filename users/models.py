@@ -228,21 +228,28 @@ class WorkBlock(models.Model):
     work_day = models.ForeignKey("WorkDay", on_delete=models.CASCADE, related_name='workblocks')
 
     def __str__(self):
-        return (f'{self.work_day.doctor.user.name} {self.work_day.doctor.user.surname} workblock starting '
+        return (f'{self.work_day.doctor.name} {self.work_day.doctor.surname} workblock starting '
                 f'at {self.start} ({self.duration})')
+
+class WorkDayManager(models.Manager):
+    def filter_by_doc_and_date(self, doc, date=date(2024,8,21)):
+        super().get_queryset().filter(doctor=doc, date=date)
 
 
 class WorkDay(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(User, on_delete=models.CASCADE)
     # empty date - routine workday | empty day - specific date
     date = models.DateField(blank=True, null=True)
     day = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(5)])
 
+    objects = models.Manager()
+    filters = WorkDayManager()
+
     def __str__(self):
         if self.date is None:
-            return f"{self.doctor.user.name}{self.doctor.user.surname}'s routine workday ({self.day})"
+            return f"{self.doctor.name}{self.doctor.surname}'s routine workday ({self.day})"
         else:
-            return f"{self.doctor.user.name}{self.doctor.user.surname}'s workday on {self.date}"
+            return f"{self.doctor.name}{self.doctor.surname}'s workday on {self.date}"
 
 # source: https://www.aucmed.edu/about/blog/a-complete-list-of-medical-specialties-and-subspecialties
 # Retrived 9.07.2024

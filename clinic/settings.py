@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+from datetime import datetime, timedelta, date, time
 from pathlib import Path
 import os
 
@@ -141,3 +141,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
+
+# Other constants
+
+CLINIC_OPENING = datetime.combine(date.today(), time(7, 0))
+CLINIC_CLOSURE = datetime.combine(date.today(), time(21, 0))
+WORKBLOCK_DURATION = timedelta(minutes=30)

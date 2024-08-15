@@ -72,9 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const now = new Date(Date.now())
 
-    console.log(now.getUTCMonth())
-    console.log('month:', now.getMonth())
-
     fetch('http://localhost:8000/calendar?' + new URLSearchParams({
         "doc-id": '3',
         year: now.getUTCFullYear(),
@@ -94,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function attachWorkHoursChanging(arg){
-    console.log("arg:", arg.dataset)
 
     arg.addEventListener('click', () => {
         // select hours changing field
@@ -107,6 +103,17 @@ function attachWorkHoursChanging(arg){
         .then(res => res.json())
         .then(response => {
             let workHoursSelection = document.querySelector("#hours-selection");
+            const ordinal = ordinal_suffix_of(arg.dataset.day)
+            let title = document.querySelector('.title')
+
+            if(!title){
+                workHoursSelection.prepend(elementFromHtml(`<div class="title">Your workhours on ${ordinal} of ${arg.dataset.month} ${arg.dataset.year}</div>`))
+                title = document.querySelector('.title')
+            } else{
+                title.innerHTML = `Your workhours on ${ordinal} of ${arg.dataset.month} ${arg.dataset.year}`
+                title.classList.remove('show')
+            }
+
             let grid = workHoursSelection.querySelector("#button-grid");
 
             workHoursSelection.classList.remove("show");
@@ -121,6 +128,7 @@ function attachWorkHoursChanging(arg){
 }
 
 function updateGrid(response, grid, dateSet) {
+    const title = grid.parentElement.querySelector('.title')
     animateButtons(() => {
         grid.innerHTML = "";
 
@@ -165,5 +173,6 @@ function updateGrid(response, grid, dateSet) {
                 button.classList.add('show');
             }, 100);
         }
+        title.classList.add('show')
     }, grid);
 }

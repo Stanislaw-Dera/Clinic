@@ -1,0 +1,145 @@
+#search-container {
+  margin: 1rem auto;
+  width: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+
+  input, select {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    background-color: #f4f4f4;
+    text-align: center;
+    width: 100%;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  input:focus, select:focus{
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(204, 204, 204, 0.5);
+    border-color: #cccccc;
+  }
+
+
+  input {
+    width: 65%;
+  }
+
+  select {
+    width: 35%;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    input, select {
+      width: 100%;
+    }
+  }
+}
+
+#filters-container {
+  text-align: center;
+  margin-top: 2rem;
+
+  .filters-text {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  .light-red{
+    margin-top: 10px;
+    opacity: 0;
+
+    &.show{
+      opacity: 1;
+    }
+  }
+}
+
+#doctors{
+  .doctor-profile {
+
+    width: 60%;
+
+    display: flex;
+    border: 1px solid #cccccc;
+    border-radius: 0.25rem;
+    background-color: #ffffff;
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 1rem auto;
+    text-align: center;
+    align-items: center;
+    padding: 20px;
+
+    .doctor-photo {
+      flex: 0 0 40%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        height: 300px;
+        max-width: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .doctor-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1rem;
+
+      .doctor-description {
+        margin-bottom: 1rem;
+
+        h2 {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+        }
+
+        p {
+          margin: 0.5rem 0;
+          font-size: 1rem;
+        }
+      }
+
+      .custom-btn {
+        width: 60%;
+        margin: 0 auto;
+      }
+    }
+      @media (max-width: 768px) {
+      flex-direction: column;
+
+      width: 100%;
+
+      .doctor-photo {
+        img {
+          height: 200px; // Określona wysokość zdjęcia
+          object-fit: cover; // Utrzymuje proporcje i przycina obrazek
+        }
+      }
+
+      .doctor-details {
+        padding: 1rem;
+        .custom-btn{
+          width: auto;
+        }
+      }}
+
+    }
+
+  }
+

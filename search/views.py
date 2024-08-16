@@ -31,4 +31,4 @@ def search(request):
 
         return JsonResponse([doctor.short_serialize() for doctor in doctors], safe=False)
 
-    return HttpResponse("foo")
+    return render(request, "search/find-specialists.html")

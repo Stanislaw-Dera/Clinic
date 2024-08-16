@@ -206,13 +206,20 @@ form {
 }
 
 #availability {
+  opacity: 0;
+
+  transition: opacity 0.3s ease;
+
+  &.show{
+    opacity: 1;
+  }
 
   #hours-selection {
     margin: auto;
     width: 70%;
+    display: none;
     background-color: #f4f4f4;
     padding: 20px;
-    display: flex;
     justify-content: center;
     opacity: 0;
     transform: translateY(20px);
@@ -222,6 +229,7 @@ form {
 
     &.show {
         opacity: 1;
+        display: flex; // some animation in the future
         transform: translateY(0);
     }
 
@@ -236,6 +244,7 @@ form {
       &.show{
         opacity: 1;
         transition: opacity 0.5s ease;
+      }
     }
   }
 

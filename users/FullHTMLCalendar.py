@@ -1,4 +1,6 @@
 import calendar
+from datetime import datetime, date
+
 
 def get_months(theyear, themonth):
     return {
@@ -12,6 +14,7 @@ def get_months(theyear, themonth):
 class FullHTMLCalendar(calendar.HTMLCalendar):
     def __init__(self, special_dates=None):
         super().__init__()
+        self.today = date.today()
         self.special_dates = special_dates
 
     def formatmonth(self, theyear, themonth, withyear=True):
@@ -50,6 +53,11 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
 
         return month_days
 
+    def get_total_weeks(self, theyear, themonth):
+        """Returns the total number of full weeks in the month including partial weeks."""
+        full_weeks = self.get_full_weeks(theyear, themonth)
+        return len(full_weeks)
+
     def formatweek(self, theweek, theyear, themonth, *args):
         """IF args are present, generate a header. First argument must be week number"""
 
@@ -63,13 +71,11 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
 
         m_range = calendar.monthrange(theyear, themonth)
 
-        week_num = args[0]
-
-        week_num = int(week_num)  # Value error? Hopefully
+        week_num = int(args[0])  # Value error? Hopefully
 
         if theweek[0][0] < 8:
-            previous = {'week': len(self.get_full_weeks(theyear, themonth)) - 1, 'month': months['prev_month'],
-                        'year': months['prev_year']}
+            previous = {'week': self.get_total_weeks(months['prev_year'], months['prev_month'])-1,
+                        'month': months['prev_month'], 'year': months['prev_year']}
         else:
             previous = {'week': week_num - 1, 'month': themonth, 'year': theyear}
 
@@ -83,14 +89,13 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
         return ('<div class="calendar">'
                 '<div class="calendar-header">'
                 f'<img class="calendar-nav-image" src="/static/functional/calendar/polygon-left.svg" '
-                f'data-prev-month="{previous["month"]}" data-prev-year="{previous["year"]}" data-prev-week="{previous["week"]}">'  # nav button
+                f'data-month="{previous["month"]}" data-year="{previous["year"]}" data-week="{previous["week"]}">'  # nav button
                 f'<div>Week {week_num + 1} of {calendar.month_name[themonth]}</div>'  # +1 for visual purposes
                 f'<img class="calendar-nav-image" src="/static/functional/calendar/polygon-right.svg" '
-                f'data-next-month="{next["month"]}" data-next-year="{next["year"]}" data-next-week="{next["week"]}">'  # nav button
+                f'data-month="{next["month"]}" data-year="{next["year"]}" data-week="{next["week"]}">'  # nav button
                 '</div>'
                 f'<div class="week">{s}</div>'
                 f'</div>')
-
 
     def formatday(self, day, weekday, theyear, themonth):
         css_class = self.cssclasses[weekday]
@@ -100,6 +105,9 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
 
         elif day in self.special_dates['working']:
             css_class = 'cal-day active'
+
+        if date(theyear, themonth, day) < self.today:
+            css_class = 'cal-day disabled'
 
         return f'<div class="{css_class}" data-day="{day}" data-month="{themonth}" data-year="{theyear}">{day}</div>'
 

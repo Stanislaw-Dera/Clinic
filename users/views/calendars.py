@@ -1,5 +1,5 @@
 # calendars api
-from datetime import timedelta, datetime, date, time
+from datetime import timedelta, datetime, date, time, timezone
 
 from django.core.exceptions import BadRequest
 from django.http import HttpResponse, JsonResponse
@@ -90,6 +90,11 @@ def get_workhours(request):
 
     wday_date = date(year, month, day)
 
+    now = datetime.now()
+
+    if wday_date < now.date():
+        return JsonResponse({'message': "You can't change past days"}, status=206)
+
     # getting working hours
     try:
         w_day = WorkDay.objects.get(doctor=user, date=wday_date)
@@ -142,12 +147,16 @@ def get_workhours(request):
     hours = {}
 
     while opening < CLINIC_CLOSURE:
-        t = time(opening.hour, opening.minute)
+        dt = datetime(year, month, day, opening.hour, opening.minute, tzinfo=timezone.utc)
+        print(dt)
+        t = dt.time()
 
         # print("time: ", opening.hour, opening.minute, "| working" if t in working_hours else "", "| visit"
         #       if t in app_hours else "")
 
-        if t in app_hours:
+        if dt < datetime.now(timezone.utc):
+            status = 'outdated'
+        elif t in app_hours:
             status = "appointment"
         elif t in working_hours:
             status = "working"
@@ -178,8 +187,8 @@ def change_workblock(request):
 
         try:
             appointments = Appointment.doc_appointments.filter_by_doc(user).filter(date_time__year=block_date.year,
-                                                                               date_time__month=block_date.month,
-                                                                               date_time__day=block_date.day)
+                                                                                   date_time__month=block_date.month,
+                                                                                   date_time__day=block_date.day)
 
             print(appointments)
             app_hours = [appointment.date_time.hour for appointment in appointments]
@@ -193,7 +202,10 @@ def change_workblock(request):
             day = WorkDay.objects.get(date=block_date.date(), doctor=user)
         except WorkDay.DoesNotExist:
             day = WorkDay.objects.create(doctor=user, date=block_date)
-            blocks = WorkDay.objects.get(doctor=user, day=block_date.weekday()).workblocks.all()
+            try:
+                blocks = WorkDay.objects.get(doctor=user, day=block_date.weekday()).workblocks.all()
+            except WorkDay.DoesNotExist:
+                blocks = WorkBlock.objects.none()
 
             for block in blocks:
                 block.pk = None

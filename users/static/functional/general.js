@@ -65,3 +65,5 @@ function ordinal_suffix_of(i) {
     }
     return i + "th";
 }
+
+const delay = t => new Promise(resolve => setTimeout(resolve, t));

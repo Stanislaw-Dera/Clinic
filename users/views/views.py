@@ -116,8 +116,6 @@ def user_profile(request):
 
                 # some photo validation?
 
-                return JsonResponse({'message': 'profile_picture updated successfully'})
-
         return render(request, 'users/functional/doctor-profile-doc-view.html', {
             "doctor": doc.serialize()
         })

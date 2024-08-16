@@ -82,18 +82,60 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(response => {
         console.log(response);
         document.querySelector('#availability').innerHTML = `<div id="hours-selection"><div id="button-grid"></div></div>` +  response.week;
+        document.querySelectorAll('.calendar-nav-image').forEach((element) => {
+            fetchCalendar(element)
+        })
     })
     .then(() => {
         document.querySelectorAll(".cal-day").forEach((element) => {
             attachWorkHoursChanging(element);
         })
     })
+
 });
+
+function fetchCalendar(element){
+    const availability = document.querySelector('#availability')
+
+    element.addEventListener('click', () => {
+        fetch('http://localhost:8000/calendar?' + new URLSearchParams({
+            "doc-id": '3',
+            year: element.dataset.year,
+            month: element.dataset.month,
+            week: element.dataset.week
+        }).toString())
+        .then(res => res.json())
+        .then(response => {
+            console.log(response);
+            availability.classList.remove('show')
+            delay(300).then(() => {
+               availability.innerHTML = `<div id="hours-selection"><div id="button-grid"></div></div>` +  response.week;
+                document.querySelectorAll('.calendar-nav-image').forEach((element) => {
+                    fetchCalendar(element)
+                });
+                document.querySelectorAll(".cal-day").forEach((element) => {
+                attachWorkHoursChanging(element);
+                });
+                availability.classList.add('show');
+            });
+
+        })
+    })
+}
+
+let clickedButton;
 
 function attachWorkHoursChanging(arg){
 
     arg.addEventListener('click', () => {
         // select hours changing field
+        let workHoursSelection = document.querySelector("#hours-selection");
+        if(clickedButton === arg){
+            workHoursSelection.classList.remove('show');
+            clickedButton = null;
+        } else{
+
+        clickedButton = arg
         fetch('http://localhost:8000/get-workhours?' + new URLSearchParams({
             "doc-id": '3',
             year: arg.dataset.year,
@@ -102,28 +144,40 @@ function attachWorkHoursChanging(arg){
         }).toString())
         .then(res => res.json())
         .then(response => {
-            let workHoursSelection = document.querySelector("#hours-selection");
-            const ordinal = ordinal_suffix_of(arg.dataset.day)
             let title = document.querySelector('.title')
+            let grid = workHoursSelection.querySelector("#button-grid");
+            if(response.message){
+                if(!title){
+                    workHoursSelection.prepend(elementFromHtml(`<div class="title show">${response.message}</div>`))
+                } else{
+                    title.innerHTML = `${response.message}`
+                }
 
-            if(!title){
-                workHoursSelection.prepend(elementFromHtml(`<div class="title">Your workhours on ${ordinal} of ${arg.dataset.month} ${arg.dataset.year}</div>`))
-                title = document.querySelector('.title')
+                grid.innerHTML = ''
+                workHoursSelection.classList.add('show');
+
             } else{
-                title.innerHTML = `Your workhours on ${ordinal} of ${arg.dataset.month} ${arg.dataset.year}`
-                title.classList.remove('show')
+                const ordinal = ordinal_suffix_of(arg.dataset.day)
+
+                if(!title){
+                    workHoursSelection.prepend(elementFromHtml(`<div class="title">Your workhours on ${ordinal} of ${arg.dataset.month} ${arg.dataset.year}</div>`))
+                } else{
+                    title.innerHTML = `Your workhours on ${ordinal} of ${arg.dataset.WeekAndMonth ? arg.dataset.month+1 : arg.dataset.month} ${arg.dataset.year}`
+                    title.classList.remove('show')
+                }
+
+                updateGrid(response, grid, arg.dataset);
+                workHoursSelection.classList.add('show');
             }
 
-            let grid = workHoursSelection.querySelector("#button-grid");
-
-            workHoursSelection.classList.remove("show");
-            updateGrid(response, grid, arg.dataset);
-            workHoursSelection.classList.add('show');
         })
         .catch((e) => {
             console.log("error:", e);
             alert(`error: ${e}`);
         })
+
+        }
+
     })
 }
 

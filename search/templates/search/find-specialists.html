@@ -2,54 +2,27 @@
 {% load static %}
 
 {% block stylesheets %}<link href="{% static 'search/search.css' %}" rel="stylesheet">{% endblock %}
+{% block script %}<script src="{% static 'search/search.js' %}"></script>{% endblock %}
 {% block body %}
     <div id="search-container">
         <input type="text" id="name-input" placeholder="Name">
         <select id="specialization-select">
-            <option value="general">General Practitioner</option>
-            <option value="dentist">Dentist</option>
+            <option selected value="">Select specialization</option>
+            {% for specialization in specializations %}
+                <option value="{{ specialization }}">{{ specialization }}</option>
+            {% endfor %}
         </select>
     </div>
     <div id="filters-container">
         <div class="filters-text">Filters</div>
-        <div class="filter-buttons">
+        <div id="filter-buttons">
           <button class="custom-btn gray-filter">Reviews</button>
           <button class="custom-btn gray-filter">Experience</button>
         </div>
-        <div class="custom-btn light-red">Search</div>
+        <div class="custom-btn light-red" id="search-button">Search</div>
     </div>
 
-    <div id="doctors">
-        <div class="doctor-profile">
-          <div class="doctor-photo">
-              <img src="/media/doc_pictures/doc_dUCXzTM.jpg" alt="Doctor Photo">
-          </div>
-          <div class="doctor-details">
-                <div class="doctor-description">
-                      <h2>Dr. John Doe</h2>
-                      <p>Specialization: Cardiologist</p>
-                      <p>Years of Experience: 15</p>
-                      <p>Location: Downtown Clinic</p>
-                    </div>
-                    <button class="custom-btn purple">View Schedule</button>
-                </div>
-          </div>
-        <div class="doctor-profile">
-          <div class="doctor-photo">
-              <img src="/media/doc_pictures/test-photo.jpg" alt="Doctor Photo">
-          </div>
-          <div class="doctor-details">
-                <div class="doctor-description">
-                      <h2>Dr. John Doe</h2>
-                      <p>Specialization: Cardiologist</p>
-                      <p>Years of Experience: 15</p>
-                      <p>Location: Downtown Clinic</p>
-                    </div>
-                    <button class="custom-btn purple">View Schedule</button>
-                </div>
-          </div>
-
-    </div>
+    <div id="doctors"></div>
 
 
 {% endblock %}

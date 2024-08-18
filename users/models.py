@@ -197,7 +197,7 @@ class Doctor(models.Model):
             "full_name": self.user.get_full_name(),
             "specializations": self.specializations,
             "experience": experience.days,
-            "profile_picture": self.profile_picture
+            "profile_picture": str(self.profile_picture)
         }
 
     def serialize(self):

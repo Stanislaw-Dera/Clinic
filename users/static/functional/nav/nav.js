@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const navbar = document.querySelector('#navbar')
-    console.log(navbar.offsetHeight)
-    const container = document.querySelector('.container')
+    const navbar = document.querySelector('#navbar');
+    console.log(navbar.offsetHeight);
+    const container = document.querySelector('.container');
     container.style.marginTop = `${navbar.offsetHeight + 32}px`;
 })
 

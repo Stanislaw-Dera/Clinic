@@ -210,6 +210,7 @@ class Doctor(models.Model):
             "started_working": self.started_working,
             "profile_picture": self.profile_picture,
             "bio": self.bio,
+            "certification": [c for c in self.certificates.all()],
         }
 
     def __str__(self):
@@ -217,7 +218,7 @@ class Doctor(models.Model):
 
 
 class Certificate(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='certificates')
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to='certificates/')
 

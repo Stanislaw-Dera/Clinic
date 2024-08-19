@@ -151,6 +151,10 @@ def doc_profile(request, pk):
     user = User.doctors.get(pk=pk)
     doc = Doctor.objects.get(user=user)
 
+    return render(request, 'users/functional/doc-profile-patient.html', {
+        "doc": doc.serialize()
+    })
+
     pass  # w templacie dodaj że jeżeli jesteś doktorem mie ma przycisku view schedule
 
 

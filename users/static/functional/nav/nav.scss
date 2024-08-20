@@ -8,8 +8,8 @@ body{
   display: flex;
   margin-bottom: 1rem;
   padding: 1rem;
-  background-color: rgba(241, 241, 241, 0.8); // Ustawienie przezroczystości
-  position: fixed; // Utrzymanie na górze strony
+  background-color: rgba(241, 241, 241, 0.8);
+  position: sticky;
   top: 0;
   width: 100%;
   z-index: 1000;
@@ -25,12 +25,12 @@ body{
     width: 100vw;
     text-align: center;
     justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column;
   }
 
   &.scrolled {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Dodanie cienia po scrollu
-    background-color: rgba(241, 241, 241, 0.9); // Zmiana koloru tła
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgba(241, 241, 241, 0.9);
   }
 }
 
@@ -48,14 +48,15 @@ body{
   display: flex;
   gap: 3rem;
 
+
   img {
     @media (min-width: 768px) {
-      height: 100px;
+      height: 80px;
       width: auto;
     }
 
     @media (max-width: 767px){
-      height:50px
+      height:60px
     }
   }
 }

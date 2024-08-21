@@ -3,13 +3,14 @@ import uuid
 from datetime import date
 
 from django.contrib.auth.base_user import BaseUserManager
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 # Create your models here.
 
 from django.contrib.auth.models import AbstractBaseUser
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, name, surname, password=None):
@@ -55,11 +56,15 @@ class PatientManager(models.Manager):
 
 
 email_exp = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+
+
 def check_email(email):
     return True if re.fullmatch(email_exp, email) else False
 
 
 phone_num_exp = r'\+[0-9\s]+'
+
+
 def check_phone_number(phone_number):
     return True if re.fullmatch(phone_num_exp, str(phone_number)) else False
 
@@ -155,7 +160,6 @@ class Patient(models.Model):
         super().save(*args, **kwargs)
 
 
-
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
@@ -232,9 +236,15 @@ class WorkBlock(models.Model):
         return (f'{self.work_day.doctor.name} {self.work_day.doctor.surname} workblock starting '
                 f'at {self.start} ({self.duration})')
 
+
 class WorkDayManager(models.Manager):
-    def filter_by_doc_and_date(self, doc, date=date(2024,8,21)):
-        super().get_queryset().filter(doctor=doc, date=date)
+    def filter_by_doc_and_date(self, doc, date):
+        try:
+            return super().get_queryset().filter(doctor=doc, date=date).get()
+        except ObjectDoesNotExist:
+            return super().get_queryset().filter(doctor=doc, day=date.weekday()).get()
+        except Doctor.DoesNotExist:
+            return super().get_queryset().none()
 
 
 class WorkDay(models.Model):

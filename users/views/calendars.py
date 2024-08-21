@@ -4,6 +4,7 @@ from datetime import timedelta, datetime, date, time, timezone
 from django.core.exceptions import BadRequest
 from django.http import HttpResponse, JsonResponse
 
+import appointments.utils
 from appointments.models import Appointment
 from users.FullHTMLCalendar import FullHTMLCalendar
 from users.models import WorkDay, Doctor, User, WorkBlock
@@ -125,20 +126,13 @@ def get_workhours(request):
     for block in w_day.workblocks.all().values("start"):
         working_hours.append(block["start"])
 
-    print("hours:", working_hours)
-
     # getting visits hours (not changeable)
 
     today_appointments = Appointment.objects.filter(doctor=user, date_time__year=year, date_time__month=month,
                                                     date_time__day=day)
     print("today appointments:", today_appointments)
 
-    app_hours = []
-
-    for appointment in today_appointments:
-        for i in range(appointment.category.duration):
-            app_hours.append(time(appointment.date_time.hour, appointment.date_time.minute))
-            appointment.date_time += WORKBLOCK_DURATION
+    app_hours = appointments.utils.get_app_hours(today_appointments)
 
     opening = CLINIC_OPENING
 
@@ -148,7 +142,6 @@ def get_workhours(request):
 
     while opening < CLINIC_CLOSURE:
         dt = datetime(year, month, day, opening.hour, opening.minute, tzinfo=timezone.utc)
-        print(dt)
         t = dt.time()
 
         # print("time: ", opening.hour, opening.minute, "| working" if t in working_hours else "", "| visit"

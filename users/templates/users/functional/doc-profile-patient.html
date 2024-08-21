@@ -2,6 +2,7 @@
 {% load static %}
 {% block stylesheets %}
 <link href="{% static 'functional/profile/doc-profile-patient-assets.css' %}" rel="stylesheet">
+<link href="{% static 'functional/calendar/calendar.css' %}" rel="stylesheet">
 {% endblock %}
 {% block script %}
 <script src="{% static 'functional/profile/doc-profile-patient.js' %}"></script>
@@ -62,7 +63,12 @@
                 <div class="overlay-close">
                     <img src="{% static 'functional/profile/cross-icon.svg' %}" alt="Close Icon">
                 </div>
-                <p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p><p>foo</p>
+                <div id="calendar">
+                    <div class="booking-container">
+
+                    </div>
+
+                </div>
             </div>
         {% endif %}
 

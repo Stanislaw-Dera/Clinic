@@ -16,6 +16,8 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
         super().__init__()
         self.today = date.today()
         self.special_dates = special_dates
+        self.is_first_week = False  # very bad way to achieve previous and next month days disabled
+        self.is_last_week = False
 
     def formatmonth(self, theyear, themonth, withyear=True):
         v = []
@@ -26,9 +28,16 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
         a('\n')
 
         weeks = self.get_full_weeks(theyear, themonth)
+        self.is_first_week = True
+        self.is_last_week = False
+        i = 1
         for week in weeks:
+            if i == self.get_total_weeks(theyear, themonth):
+                self.is_last_week = True
             a(self.formatweek(week, theyear, themonth))
             a('\n')
+            self.is_first_week = False
+            i += 1
         a('</div>')
         a('\n')
         return ''.join(v)
@@ -61,10 +70,26 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
     def formatweek(self, theweek, theyear, themonth, *args):
         """IF args are present, generate a header. First argument must be week number"""
 
+        if args:
+            if args[0] == 0:
+                self.is_first_week = True
+            elif args[0] == self.get_total_weeks(theyear, themonth) - 1:
+                self.is_last_week = True
+
         print("formatweek args:", args)
-        s = ''.join(self.formatday(d, wd, theyear, themonth) for (d, wd) in theweek)
+        # s = ''.join(self.formatday(d, wd, theyear, themonth) for (d, wd) in theweek)
+        s: str = ''
+        for d, wd in theweek:
+            if d > theweek[6][0] and self.is_first_week:
+                s += self.formatday(d, wd, theyear, themonth-1)
+            elif d < theweek[0][0] and self.is_last_week:
+                s += self.formatday(d, wd, theyear, themonth + 1)
+            else:
+                s += self.formatday(d, wd, theyear, themonth)
 
         if not args:
+            self.is_first_week = False
+            self.is_last_week = False # fix last / first week
             return '<div class="week">%s</div>' % s
 
         months = get_months(theyear, themonth)
@@ -100,7 +125,7 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
     def formatday(self, day, weekday, theyear, themonth):
         css_class = self.cssclasses[weekday]
 
-        if day in self.special_dates['free']:
+        if day in self.special_dates['free']: # bug - prev/next month
             css_class = 'cal-day disabled'
 
         elif day in self.special_dates['working']:

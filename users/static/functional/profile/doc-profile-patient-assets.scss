@@ -122,25 +122,25 @@
   position: absolute;
   width: 100%;
   height: 0;
-  top: 100%; /* Początkowo poza ekranem */
+  top: 100%;
   left: 0;
   z-index: 1000;
-  transition: height 0.2s ease,opacity 0.1s ease ,top 0.5s ease;
+  transition: height 0.5s ease,opacity 0.4s ease ,top 0.5s ease;
   opacity: 0;
 
   &.active {
-    top: 0; /* Gdy aktywny, przesuwa się na widoczną część */
+    top: 0;
     opacity: 1;
     height: 100%;
   }
 }
 
 .overlay-close {
-  position: absolute;
-  top: 20px; /* Margines od góry */
+  position: relative;
+  top: 20px;
   left: 50%;
-  transform: translateX(-50%); /* Wyśrodkowanie poziome */
-  width: 50px; /* Dostosuj rozmiar ikony */
+  transform: translateX(-50%);
+  width: 50px;
   height: 50px;
   cursor: pointer;
 
@@ -148,4 +148,14 @@
     width: 100%;
     height: auto;
   }
+}
+
+#calendar{
+  position: relative;
+  top: 15px;
+
+  .booking-container{
+
+  }
+
 }

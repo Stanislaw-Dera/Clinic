@@ -59,18 +59,16 @@ def get_doc_booking_data(request, doc_id):
     else:
         dt = datetime.combine(dt, time(6, 0))
 
-    dt = dt.replace(hour=11, minute=23)
-
     closure = dt.replace(hour=settings.CLINIC_CLOSURE.hour, minute=settings.CLINIC_CLOSURE.minute)
 
     doc = User.objects.get(id=doc_id)
-    blocks = WorkDay.filters.filter_by_doc_and_date(doc=doc, date=dt.date()).workblocks.filter(start__range=(dt.time(), closure.time()))
+    blocks = WorkDay.filters.filter_by_doc_and_date(doc=doc, date=dt.date()).workblocks.filter(start__range=(dt.time(), closure.time())).order_by('start')
 
     appointments = Appointment.objects.filter(doctor=doc, date_time=dt)
 
     app_hours = get_app_hours(appointments)
 
-    available_hours = [block.start for block in blocks if block.start not in app_hours]
+    available_hours = [block.start.strftime('%H:%M') for block in blocks if block.start not in app_hours]
 
     categories = []
     if request.user.role == 'p':

@@ -1,75 +1,73 @@
 {% extends 'users/functional/main-layout.html' %}
 {% load static %}
 {% block stylesheets %}
-<link href="{% static 'functional/profile/doc-profile-patient-assets.css' %}" rel="stylesheet">
-<link href="{% static 'functional/calendar/calendar.css' %}" rel="stylesheet">
+    <link href="{% static 'functional/profile/doc-profile-patient-assets.css' %}" rel="stylesheet">
+    <link href="{% static 'functional/calendar/calendar.css' %}" rel="stylesheet">
 {% endblock %}
 {% block script %}
-<script src="{% static 'functional/profile/doc-profile-patient.js' %}"></script>
+    <script src="{% static 'functional/profile/doc-profile-patient.js' %}"></script>
 {% endblock %}
 
 {% block body %}
-        <div id="doc-profile-patient">
-            <div class="left-column">
-                <img id="profile-picture" src="../../media/{{ doc.profile_picture }}" alt="Profile Picture" />
-                {% if user.role == 'p' %}
+    <div id="doc-profile-patient">
+        <div class="left-column">
+            <img id="profile-picture" src="../../media/{{ doc.profile_picture }}" alt="Profile Picture"/>
+            {% if user.role == 'p' %}
                 <button class="custom-btn purple">View Schedule</button>
-                {% endif %}
-            </div>
+            {% endif %}
+        </div>
 
-            <div class="right-column">
-                <h1>{{ doc.full_name }}</h1>
-                <div class="doc-profile-element">
-                    <div class="element-title">General Information</div>
-                    <hr>
-                    <div class="content">
-                        <p>Specializations: {{ doc.specializations }}</p>
-                        <p>Started working on: {{ doc.started_working }} ({{ doc.experience }} years)</p>
-                        <p>Email: {{ doc.email }}</p>
-                    </div>
+        <div class="right-column">
+            <h1>{{ doc.full_name }}</h1>
+            <div class="doc-profile-element">
+                <div class="element-title">General Information</div>
+                <hr>
+                <div class="content">
+                    <p>Specializations: {{ doc.specializations }}</p>
+                    <p>Started working on: {{ doc.started_working }} ({{ doc.experience }} years)</p>
+                    <p>Email: {{ doc.email }}</p>
                 </div>
-                <div class="doc-profile-element">
-                    <div class="element-title">Biography</div>
-                    <hr>
-                    <div class="content">{{ doc.bio }}</div>
-                </div>
-                <div class="doc-profile-element">
-                    <div class="element-title">Certification</div>
-                    <hr>
-                    <div class="content">
-                        <div class="images">
-                            {% for img in doc.certification %}
+            </div>
+            <div class="doc-profile-element">
+                <div class="element-title">Biography</div>
+                <hr>
+                <div class="content">{{ doc.bio }}</div>
+            </div>
+            <div class="doc-profile-element">
+                <div class="element-title">Certification</div>
+                <hr>
+                <div class="content">
+                    <div class="images">
+                        {% for img in doc.certification %}
                             <div class="image-container">
                                 <img src="/../../media/{{ img.image }}" alt="{{ img.name }}">
                             </div>
-                            {% endfor %}
-                        </div>
+                        {% endfor %}
                     </div>
-                </div>
-                <div class="doc-profile-element">
-                        <div class="element-title">Reviews</div>
-                        <hr>
-                        <div class="content">
-                            <div class="reviews">
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        </div>
-
-        {% if user.role == 'p' %}
-            <div id="booking-calendar">
-                <div class="overlay-close">
-                    <img src="{% static 'functional/profile/cross-icon.svg' %}" alt="Close Icon">
-                </div>
-                <div id="calendar">
-                    <div class="booking-container">
-
-                    </div>
-
                 </div>
             </div>
-        {% endif %}
+            <div class="doc-profile-element">
+                <div class="element-title">Reviews</div>
+                <hr>
+                <div class="content">
+                    <div class="reviews">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if user.role == 'p' %}
+        <div id="booking-calendar">
+            <div class="overlay-close">
+                <img src="{% static 'functional/profile/cross-icon.svg' %}" alt="Close Icon">
+            </div>
+            <div id="calendar">
+                <div class="booking-container">
+                </div>
+            </div>
+        </div>
+    {% endif %}
 
 {% endblock %}

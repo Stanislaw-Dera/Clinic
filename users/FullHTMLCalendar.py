@@ -148,8 +148,8 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
             s = '%s' % calendar.month_name[themonth]
         return (f'<div class="calendar-header">'
                 f'<img class="calendar-nav-image" src="/static/functional/calendar/polygon-left.svg" '
-                f'data-prev-month="{months["prev_month"]}" data-prev-year="{months["prev_year"]}">'  # nav button
+                f'data-month="{months["prev_month"]}" data-year="{months["prev_year"]}">'  # nav button
                 f'<div>{s}</div>'
                 f'<img class="calendar-nav-image" src="/static/functional/calendar/polygon-right.svg" '
-                f'data-next-month="{months["next_month"]}" data-next-year="{months["next_year"]}">'  # nav button
+                f'data-month="{months["next_month"]}" data-year="{months["next_year"]}">'  # nav button
                 '</div>')

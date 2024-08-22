@@ -77,13 +77,15 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
                 self.is_last_week = True
 
         print("formatweek args:", args)
-        # s = ''.join(self.formatday(d, wd, theyear, themonth) for (d, wd) in theweek)
+
+        months = get_months(theyear, themonth)
+
         s: str = ''
         for d, wd in theweek:
             if d > theweek[6][0] and self.is_first_week:
-                s += self.formatday(d, wd, theyear, themonth-1)
+                s += self.formatday(d, wd, months['prev_year'], months['prev_month'])
             elif d < theweek[0][0] and self.is_last_week:
-                s += self.formatday(d, wd, theyear, themonth + 1)
+                s += self.formatday(d, wd, months['prev_year'], months['prev_month'])
             else:
                 s += self.formatday(d, wd, theyear, themonth)
 
@@ -91,8 +93,6 @@ class FullHTMLCalendar(calendar.HTMLCalendar):
             self.is_first_week = False
             self.is_last_week = False # fix last / first week
             return '<div class="week">%s</div>' % s
-
-        months = get_months(theyear, themonth)
 
         m_range = calendar.monthrange(theyear, themonth)
 

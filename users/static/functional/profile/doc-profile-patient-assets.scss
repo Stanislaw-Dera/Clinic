@@ -167,21 +167,21 @@
     margin: auto;
     padding: 10px;
     width: 60%;
-    height: 0;
     opacity: 0;
+    height: 0;
 
-    transition: opacity 0.3s ease, height 0.3s ease;
+    transition: opacity 0.05s ease, height 0.1s;
 
     &.show{
-      height: auto;
       opacity: 1;
+      height: auto;
     }
 
     h2{text-align: center}
 
     .button-container {
       display: flex;
-      overflow-x: auto;
+      overflow-x: scroll;
       white-space: nowrap;
       padding: 10px 0;
 
@@ -192,7 +192,7 @@
       .buttons-wrapper {
         display: inline-flex;
         gap: 10px;
-        //margin:auto; sth different
+        margin:auto;
       }
     }
     .purple{

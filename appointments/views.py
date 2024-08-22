@@ -83,3 +83,39 @@ def manage_appointment(request, doc_id):
     pass
     # POST, PUT, DELETE appointments
     # one at the time at one doctor.
+
+    if request.method == 'POST':
+        dt = request.POST.get('datetime')
+        category = request.POST.get('category')
+        print(dt)
+
+        doc = User.objects.get(pk=doc_id)
+        dt = datetime.strptime(dt, '%Y-%m-%d %H:%M')
+
+        # check if time is available
+        blocks = WorkDay.filters.filter_by_doc_and_date(doc=doc, date=dt.date()).workblocks.all()
+        app_hours = get_app_hours(Appointment.objects.filter(doctor=doc, date_time__year=dt.year,
+                                                             date_time__month=dt.month, date_time__day=dt.day))
+
+        # check whether user has app at that doc
+        try:
+            foo = Appointment.objects.get(doctor=doc, patient=request.user, status='Upcoming')
+            raise BadRequest('You already have an appointment at this doctor. You can edit it here.')
+        except Appointment.DoesNotExist:
+            pass
+
+        print(category)
+        cat = Category.objects.get(name=category)
+
+        full_time = dt
+        for i in range(cat.duration):
+            if full_time.time() in [b.start for b in blocks] and full_time.time() not in app_hours:
+                pass
+            else:
+                raise BadRequest('Invalid appointment. ')
+            full_time += settings.WORKBLOCK_DURATION
+
+        appointment = Appointment.objects.create(doctor=doc, date_time=dt, category=cat, patient=request.user)
+
+        return JsonResponse({'message': 'Appointment created successfully'}, status=200)
+        # created succesfully, now debug :#

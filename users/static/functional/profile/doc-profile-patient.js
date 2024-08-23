@@ -113,7 +113,8 @@ function getBookingData(element, bookingContainer) {
 
 						</div>
 					</div>
-					<button class="custom-btn purple booking-button">Book a visit</button>`
+					<button class="custom-btn purple booking-button">Book a visit</button>
+					<div class="book-error-container"></div>`
 			// handling response elements
 
 			const timeWrapper = document.querySelector('#time-selection')
@@ -170,13 +171,19 @@ function postAppointment(formData){
 		headers: {'X-CSRFToken': getCookie('csrftoken')},
 		body: formData
 	})
-	.then(response => response.json())
+	.then(response => {
+		if (!response.ok) {
+        	return response.json().then(err => { throw new Error(err.message); });
+    	}
+
+		return response.json()
+	})
 	.then(response => {
 		console.log(response)
 	})
 	.catch(e => {
 		console.log("error in function postAppointment:", e.message);
-		alert(`error: ${e}`);
+		document.querySelector('.book-error-container').innerHTML = e.message
 	})
 }
 

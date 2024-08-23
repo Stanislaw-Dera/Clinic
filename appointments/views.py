@@ -1,3 +1,4 @@
+import json
 from datetime import date, datetime, time
 
 from django.contrib.auth.decorators import login_required
@@ -44,7 +45,7 @@ def patient_history(request):
     return JsonResponse([appointment.serialize() for appointment in appointments], safe=False)
 
 
-#doc history for one day
+# doc history for one day
 
 def get_doc_booking_data(request, doc_id):
     day = request.GET.get('day')
@@ -62,7 +63,8 @@ def get_doc_booking_data(request, doc_id):
     closure = dt.replace(hour=settings.CLINIC_CLOSURE.hour, minute=settings.CLINIC_CLOSURE.minute)
 
     doc = User.objects.get(id=doc_id)
-    blocks = WorkDay.filters.filter_by_doc_and_date(doc=doc, date=dt.date()).workblocks.filter(start__range=(dt.time(), closure.time())).order_by('start')
+    blocks = WorkDay.filters.filter_by_doc_and_date(doc=doc, date=dt.date()).workblocks.filter(
+        start__range=(dt.time(), closure.time())).order_by('start')
 
     appointments = Appointment.objects.filter(doctor=doc, date_time=dt)
 
@@ -77,9 +79,12 @@ def get_doc_booking_data(request, doc_id):
     elif request.user.role == 'd':
         categories = Category.objects.for_doctor()
 
-    return JsonResponse({'bookingHours': available_hours, 'categories': [c.name for c in categories], 'date': dt.date()}, safe=False, status=200)
+    return JsonResponse(
+        {'bookingHours': available_hours, 'categories': [c.name for c in categories], 'date': dt.date()}, safe=False,
+        status=200)
 
-def manage_appointment(request, doc_id):
+
+def manage_appointment(request, user_id):
     pass
     # POST, PUT, DELETE appointments
     # one at the time at one doctor.
@@ -88,9 +93,23 @@ def manage_appointment(request, doc_id):
         dt = request.POST.get('datetime')
         category = request.POST.get('category')
         print(dt)
-
-        doc = User.objects.get(pk=doc_id)
         dt = datetime.strptime(dt, '%Y-%m-%d %H:%M')
+
+        if request.user.role == 'p':
+            doc = User.objects.get(pk=user_id)
+
+            if not Doctor.objects.get(user=doc).exists():
+                return JsonResponse({'message': 'Doctor does not exist'}, status=400)
+
+            patient = request.user
+        elif request.user.role == 'd':
+            doc = request.user
+            patient = User.objects.get(pk=user_id)
+
+            if not patient.objects.get(user=patient).exists():
+                return JsonResponse({'message': 'Patient does not exist'}, status=400)
+        else:
+            return HttpResponse("???? Man you're not even a user", status=400)
 
         # check if time is available
         blocks = WorkDay.filters.filter_by_doc_and_date(doc=doc, date=dt.date()).workblocks.all()
@@ -99,8 +118,8 @@ def manage_appointment(request, doc_id):
 
         # check whether user has app at that doc
         try:
-            foo = Appointment.objects.get(doctor=doc, patient=request.user, status='Upcoming')
-            raise BadRequest('You already have an appointment at this doctor. You can edit it here.')
+            foo = Appointment.objects.get(doctor=doc, patient=patient, status='Upcoming')
+            return JsonResponse({'message': 'You already have an upcoming appointment at this doctor.'}, status=400)
         except Appointment.DoesNotExist:
             pass
 
@@ -115,7 +134,18 @@ def manage_appointment(request, doc_id):
                 raise BadRequest('Invalid appointment. ')
             full_time += settings.WORKBLOCK_DURATION
 
-        appointment = Appointment.objects.create(doctor=doc, date_time=dt, category=cat, patient=request.user)
+        appointment = Appointment.objects.create(doctor=doc, date_time=dt, category=cat, patient=patient)
 
         return JsonResponse({'message': 'Appointment created successfully'}, status=200)
-        # created succesfully, now debug :#
+
+    elif request.method == 'PUT':
+        body_unicode = request.body.decode('utf-8')
+        data = json.loads(body_unicode)
+        print('Data:', data)
+
+        # Przykład dostępu do poszczególnych pól
+        # field_value = data.get('field_name')
+
+        # Przetwarzaj dane tutaj
+
+        return JsonResponse({'message': 'Data received successfully.'})

@@ -199,6 +199,12 @@
       display: flex;
       margin: auto;
     }
+    .book-error-container{
+      color: #ff5555;
+      text-align: center;
+      font-size: small;
+      margin: 10px 0;
+    }
 
     @media(max-width: 767px){
       width: 100%;

@@ -1,0 +1,31 @@
+{% extends 'users/functional/main-layout.html' %}
+{% load static %}
+{% block stylesheets %}
+    <link href="{% static 'appointments/patient-history.css' %}" rel="stylesheet">
+{% endblock %}
+{% block script %}
+    <script src="{% static 'appointments/patient_history.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <h1>Appointment history</h1>
+    <div class="filters-container">
+        <div class="filters-text">Filters</div>
+        <div id="filter-buttons">
+            <button id="filter-date" class="custom-btn gray"
+                    data-options="{{ date_options }}" data-counter="0">Date desc.</button>
+            <button id="filter-status" class="custom-btn gray"
+                    data-options="{{ status_options }}" data-counter="0">Status: all</button>
+            <button id="filter-doctor" class="custom-btn gray"
+                    data-options="{{ doctor_options }}" data-counter="0" data-doc-id="all">Doctor: all</button>
+        </div>
+        <div id="search-button" class="custom-btn light-red">Search</div>
+    </div>
+    <hr>
+    <div class="appointments">
+
+    </div>
+    <div class="appointments-footer">
+
+    </div>
+{% endblock %}
